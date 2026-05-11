@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cursos SESI SENAI Lagoa 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Firebase SDK (Realtime Database + Auth) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 /* ─── VARIÁVEIS ─────────────────────────────── */
 :root {
@@ -79,6 +83,11 @@ footer em { color:rgba(255,255,255,.3); font-style:normal; }
 .month-section.hidden { display:none; }
 .admin-entry { color:rgba(255,255,255,.15); font-size:11px; text-decoration:none; cursor:pointer; margin-top:12px; display:inline-block; transition:color .2s; letter-spacing:2px; }
 .admin-entry:hover { color:rgba(255,255,255,.45); }
+/* Indicador de modo (nuvem/local) */
+.mode-badge { display:inline-flex; align-items:center; gap:5px; font-size:11px; padding:3px 10px; border-radius:12px; margin-top:10px; }
+.mode-badge.cloud { background:rgba(41,182,232,.2); color:var(--cyan); border:1px solid rgba(41,182,232,.3); }
+.mode-badge.local { background:rgba(245,166,35,.15); color:#c07800; border:1px solid rgba(245,166,35,.3); }
+.mode-badge.loading { background:rgba(255,255,255,.1); color:rgba(255,255,255,.4); border:1px solid rgba(255,255,255,.15); }
 
 /* ══════════════════════ MODAL LOGIN ══════════════════════ */
 .overlay { position:fixed; inset:0; background:rgba(0,0,0,.65); backdrop-filter:blur(4px); z-index:900; display:flex; align-items:center; justify-content:center; animation:ovIn .2s; }
@@ -253,6 +262,7 @@ footer em { color:rgba(255,255,255,.3); font-style:normal; }
       Converse com o Atendimento SESI SENAI LAGOA
     </a>
     <br><span class="admin-entry" onclick="openLogin()">● ADMIN</span>
+    <br><span class="mode-badge loading" id="mode-badge">⟳ conectando...</span>
   </footer>
 </div>
 
@@ -261,10 +271,10 @@ footer em { color:rgba(255,255,255,.3); font-style:normal; }
   <div class="login-box">
     <div class="login-logo"><span>SENAI ADMIN</span></div>
     <h2>Acesso Administrativo</h2>
-    <p>Informe suas credenciais para gerenciar os cursos.</p>
+    <p>Entre com o e-mail e senha cadastrados no Firebase.</p>
     <div class="fg">
-      <label>Usuário</label>
-      <input type="text" id="l-user" placeholder="admin" autocomplete="username">
+      <label>E-mail do Administrador</label>
+      <input type="email" id="l-user" placeholder="admin@senailagoa.com.br" autocomplete="email">
     </div>
     <div class="fg">
       <label>Senha</label>
@@ -453,10 +463,13 @@ footer em { color:rgba(255,255,255,.3); font-style:normal; }
             <div class="pw-err hidden" id="pw-err"></div>
           </div></div>
 
-          <div class="sh" style="margin-top:20px"><h3>Usuário Admin</h3></div>
+          <div class="sh" style="margin-top:20px"><h3>Conta Administrativa</h3></div>
           <div class="fp"><div class="fp-body">
-            <div class="fg"><label>Nome de Usuário</label><input type="text" id="cc-user" placeholder="admin"></div>
-            <button class="btn b-blue" onclick="saveUser()">💾 Salvar Usuário</button>
+            <div class="fg"><label>E-mail logado</label>
+              <input type="email" id="cc-user" placeholder="—" readonly
+                style="background:#f4f6fa;color:var(--muted);cursor:default">
+            </div>
+            <p style="font-size:12px;color:var(--muted);margin-top:4px">Para alterar o e-mail de acesso, use o Console do Firebase.</p>
           </div></div>
         </div>
       </div>
@@ -491,11 +504,30 @@ footer em { color:rgba(255,255,255,.3); font-style:normal; }
 </div>
 
 <script>
+/* ═══════════════════════════════════════════════════════════
+   CONFIGURAÇÃO DO FIREBASE
+   ─────────────────────────────────────────────────────────
+   1. Acesse https://console.firebase.google.com
+   2. Crie um projeto → Realtime Database → Autenticação
+   3. Copie os dados do seu app abaixo
+   4. Em Regras do banco, cole:
+      { "rules": { "senai_db": { ".read": true, ".write": "auth != null" } } }
+   ═══════════════════════════════════════════════════════════ */
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyA_GkIbxLMTiVsk9CbRJCO1_B6i01R2InE",
+  authDomain:        "senai-lagoa-cursos.firebaseapp.com",
+  databaseURL:       "https://senai-lagoa-cursos-default-rtdb.firebaseio.com",
+  projectId:         "senai-lagoa-cursos",
+  storageBucket:     "senai-lagoa-cursos.firebasestorage.app",
+  messagingSenderId: "233679090645",
+  appId:             "1:233679090645:web:d66a5675ae3c8a77f2035c"
+};
+
 /* ───────────────────────────────────────────────
-   BANCO DE DADOS (localStorage)
+   BANCO DE DADOS
 ─────────────────────────────────────────────── */
-const DB_KEY = 'senai_v3';
-const DEFAULT_PW = 'senai@2026';
+const DB_KEY    = 'senai_v3';
+const DEFAULT_PW = 'senai@2026'; // usado apenas no modo offline
 
 const DEFAULT_DB = {
   config:{
@@ -541,72 +573,214 @@ const DEFAULT_DB = {
   ]
 };
 
-let DB = null;
+let DB          = null;
+let logged      = false;
+let firebaseReady = false;   // true quando Firebase está conectado
+let fbAuth      = null;
+let fbDB        = null;
 
 async function sha256(s) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
-function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(DB)); }
-function gid()    { return 'c'+Date.now()+Math.random().toString(36).substr(2,4); }
+function gid() { return 'c'+Date.now()+Math.random().toString(36).substr(2,4); }
 
+/* Salva no localStorage (cache) e na nuvem se autenticado */
+function saveDB() {
+  localStorage.setItem(DB_KEY, JSON.stringify(DB));
+  if (firebaseReady) {
+    if (logged) {
+      fbDB.ref('senai_db').set(DB).catch(e => {
+        console.error('Firebase save error:', e);
+        toast('Erro ao salvar na nuvem: ' + (e.message || e.code), 'ko');
+      });
+    } else {
+      console.warn('saveDB: Firebase pronto mas não autenticado — salvou apenas em cache local.');
+    }
+  }
+}
+
+function setModeBadge(mode) {
+  const b = document.getElementById('mode-badge');
+  if (!b) return;
+  const MAP = {
+    cloud:   ['cloud',  '☁️ dados em nuvem'],
+    local:   ['local',  '💾 modo local'],
+    loading: ['loading','⟳ conectando...'],
+    error:   ['local',  '⚠️ sem conexão']
+  };
+  const [cls, txt] = MAP[mode] || MAP.loading;
+  b.className = 'mode-badge ' + cls;
+  b.textContent = txt;
+}
+
+function isFirebaseConfigured() {
+  return FIREBASE_CONFIG.apiKey && !FIREBASE_CONFIG.apiKey.startsWith('COLE_');
+}
+
+/* Inicialização principal */
 async function initDB() {
-  const raw = localStorage.getItem(DB_KEY);
-  DB = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_DB));
-  if (!DB.config.passwordHash) { DB.config.passwordHash = await sha256(DEFAULT_PW); saveDB(); }
+  // Mostra cache local imediatamente (carregamento instantâneo)
+  const cached = localStorage.getItem(DB_KEY);
+  if (cached) { try { DB = JSON.parse(cached); } catch(e) {} }
+  if (!DB) DB = JSON.parse(JSON.stringify(DEFAULT_DB));
+  refreshPub();
+
+  if (!isFirebaseConfigured()) {
+    // ── MODO OFFLINE / LOCAL ────────────────────────────────
+    if (!DB.config.passwordHash) {
+      DB.config.passwordHash = await sha256(DEFAULT_PW); saveDB();
+    }
+    setModeBadge('local');
+    return;
+  }
+
+  // ── MODO FIREBASE / NUVEM ──────────────────────────────────
+  try {
+    // Evita inicializar o app mais de uma vez
+    if (!firebase.apps.length) {
+      firebase.initializeApp(FIREBASE_CONFIG);
+    }
+    fbAuth = firebase.auth();
+    fbDB   = firebase.database();
+
+    // Listener de estado de autenticação
+    fbAuth.onAuthStateChanged(user => {
+      logged = !!user;
+      if (user) {
+        const el = document.getElementById('cc-user');
+        if (el) el.value = user.email;
+      }
+    });
+
+    // Sincronização em tempo real — qualquer mudança no Firebase
+    // atualiza o site público automaticamente para todos os visitantes
+    fbDB.ref('senai_db').on('value', snap => {
+      if (snap.exists()) {
+        DB = snap.val();
+        localStorage.setItem(DB_KEY, JSON.stringify(DB));
+      }
+      // Se o banco ainda está vazio, usa DEFAULT_DB já carregado.
+      // O Firebase será populado quando o admin fizer login e salvar.
+      refreshPub();
+      if (logged && document.getElementById('adm').classList.contains('show')) {
+        renderDash(); fillMesSels();
+        if (document.getElementById('tp-cursos').style.display !== 'none') renderList();
+      }
+    }, err => {
+      console.error('Firebase read error:', err);
+      setModeBadge('error');
+      if (err.code === 'PERMISSION_DENIED') {
+        toast('⚠️ Permissão negada no banco de dados. Verifique as Regras no Firebase Console.', 'ko');
+      }
+    });
+
+    firebaseReady = true;
+    setModeBadge('cloud');
+
+  } catch(e) {
+    console.error('Firebase init error:', e);
+    setModeBadge('error');
+    toast('Erro ao conectar ao Firebase: ' + (e.message || e.code || e), 'ko');
+    // Continua funcionando com os dados do cache local
+  }
 }
 
 /* ───────────────────────────────────────────────
    AUTH
 ─────────────────────────────────────────────── */
-let logged = false;
-
 function openLogin() {
   document.getElementById('login-ov').classList.remove('hidden');
-  document.getElementById('l-user').value='';
-  document.getElementById('l-pass').value='';
-  document.getElementById('l-err').style.display='none';
-  setTimeout(()=>document.getElementById('l-user').focus(),80);
+  document.getElementById('l-user').value  = '';
+  document.getElementById('l-pass').value  = '';
+  document.getElementById('l-err').style.display = 'none';
+  setTimeout(() => document.getElementById('l-user').focus(), 80);
 }
 function closeLogin() { document.getElementById('login-ov').classList.add('hidden'); }
 
 async function doLogin() {
-  const u=document.getElementById('l-user').value.trim();
-  const p=document.getElementById('l-pass').value;
-  const h=await sha256(p);
-  if(u===DB.config.username && h===DB.config.passwordHash) {
-    logged=true; closeLogin(); showAdmin();
+  const u   = document.getElementById('l-user').value.trim();
+  const p   = document.getElementById('l-pass').value;
+  const btn = document.querySelector('.btn-submit');
+  const err = document.getElementById('l-err');
+  err.style.display = 'none';
+  if (btn) btn.textContent = 'Entrando...';
+
+  if (firebaseReady) {
+    // ── Firebase Auth ──────────────────────────────────────
+    try {
+      await fbAuth.signInWithEmailAndPassword(u, p);
+      closeLogin(); showAdmin();
+    } catch(e) {
+      err.textContent = 'E-mail ou senha incorretos.';
+      err.style.display = 'block';
+      if (btn) btn.textContent = 'Entrar';
+    }
   } else {
-    document.getElementById('l-err').style.display='block';
+    // ── Fallback local (Firebase não configurado) ──────────
+    const h = await sha256(p);
+    if (u === DB.config.username && h === DB.config.passwordHash) {
+      logged = true; closeLogin(); showAdmin();
+    } else {
+      err.textContent = 'Usuário ou senha incorretos.';
+      err.style.display = 'block';
+      if (btn) btn.textContent = 'Entrar';
+    }
   }
 }
 
-function logout() {
-  logged=false;
+async function logout() {
+  if (firebaseReady) {
+    await fbAuth.signOut();
+  }
+  logged = false;
   document.getElementById('adm').classList.remove('show');
-  document.getElementById('pub').style.display='';
+  document.getElementById('pub').style.display = '';
 }
 
 async function chgPw() {
-  const cur=document.getElementById('pw-cur').value;
-  const nw =document.getElementById('pw-new').value;
-  const cfm=document.getElementById('pw-cfm').value;
-  const err=document.getElementById('pw-err');
+  const cur = document.getElementById('pw-cur').value;
+  const nw  = document.getElementById('pw-new').value;
+  const cfm = document.getElementById('pw-cfm').value;
+  const err = document.getElementById('pw-err');
   err.classList.add('hidden');
-  if(nw.length<6){err.textContent='Senha deve ter pelo menos 6 caracteres.';err.classList.remove('hidden');return;}
-  if(nw!==cfm){err.textContent='As senhas não coincidem.';err.classList.remove('hidden');return;}
-  if(await sha256(cur)!==DB.config.passwordHash){err.textContent='Senha atual incorreta.';err.classList.remove('hidden');return;}
-  DB.config.passwordHash=await sha256(nw); saveDB();
-  document.getElementById('pw-cur').value='';
-  document.getElementById('pw-new').value='';
-  document.getElementById('pw-cfm').value='';
-  toast('Senha alterada com sucesso!','ok');
+
+  if (nw.length < 6) { err.textContent='Senha deve ter pelo menos 6 caracteres.'; err.classList.remove('hidden'); return; }
+  if (nw !== cfm)    { err.textContent='As senhas não coincidem.'; err.classList.remove('hidden'); return; }
+
+  if (firebaseReady) {
+    // ── Firebase: re-autentica e troca a senha ─────────────
+    try {
+      const user = fbAuth.currentUser;
+      const cred = firebase.auth.EmailAuthProvider.credential(user.email, cur);
+      await user.reauthenticateWithCredential(cred);
+      await user.updatePassword(nw);
+      document.getElementById('pw-cur').value = '';
+      document.getElementById('pw-new').value = '';
+      document.getElementById('pw-cfm').value = '';
+      toast('Senha alterada com sucesso!', 'ok');
+    } catch(e) {
+      err.textContent = e.code === 'auth/wrong-password' ? 'Senha atual incorreta.' : 'Erro: ' + e.message;
+      err.classList.remove('hidden');
+    }
+  } else {
+    // ── Fallback local ─────────────────────────────────────
+    if (await sha256(cur) !== DB.config.passwordHash) {
+      err.textContent = 'Senha atual incorreta.'; err.classList.remove('hidden'); return;
+    }
+    DB.config.passwordHash = await sha256(nw); saveDB();
+    document.getElementById('pw-cur').value = '';
+    document.getElementById('pw-new').value = '';
+    document.getElementById('pw-cfm').value = '';
+    toast('Senha alterada com sucesso!', 'ok');
+  }
 }
 
 function saveUser() {
-  const u=document.getElementById('cc-user').value.trim();
-  if(!u) return;
-  DB.config.username=u; saveDB(); toast('Usuário atualizado!','ok');
+  // Mantido por compatibilidade com modo local
+  const u = document.getElementById('cc-user')?.value.trim();
+  if (!u || firebaseReady) return;
+  DB.config.username = u; saveDB(); toast('Usuário atualizado!', 'ok');
 }
 
 /* ───────────────────────────────────────────────
@@ -986,7 +1160,13 @@ function renderCfg() {
   document.getElementById('cc-wa').value    =DB.config.whatsapp||'';
   document.getElementById('cc-ftnome').value=DB.config.ftNome||'';
   document.getElementById('cc-ftend').value =DB.config.ftEnd||'';
-  document.getElementById('cc-user').value  =DB.config.username||'admin';
+  // Mostra e-mail do admin logado (Firebase) ou usuário local
+  const emailEl = document.getElementById('cc-user');
+  if (emailEl) {
+    emailEl.value = firebaseReady && fbAuth?.currentUser
+      ? fbAuth.currentUser.email
+      : (DB.config.username || 'admin (modo local)');
+  }
 }
 
 function saveCfg() {
@@ -1021,7 +1201,7 @@ function importDB() {
 
 async function resetDB() {
   DB=JSON.parse(JSON.stringify(DEFAULT_DB));
-  DB.config.passwordHash=await sha256(DEFAULT_PW);
+  if (!firebaseReady) { DB.config.passwordHash=await sha256(DEFAULT_PW); }
   saveDB(); refreshPub(); fillMesSels(); renderDash();
   toast('Dados resetados para o padrão.','ok');
 }
@@ -1111,9 +1291,12 @@ function pubFilt(type,btn) {
 /* ───────────────────────────────────────────────
    BOOT
 ─────────────────────────────────────────────── */
-initDB().then(()=>{
+initDB().catch(e => {
+  console.error('Falha na inicialização:', e);
+  if (!DB) DB = JSON.parse(JSON.stringify(DEFAULT_DB));
   refreshPub();
-  if(window.location.hash==='#admin') openLogin();
+}).finally(() => {
+  if (window.location.hash === '#admin') openLogin();
 });
 </script>
 </body>
