@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cursos SESI SENAI Lagoa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── VARIÁVEIS ─────────────────────────────── */
+:root {
+  --navy:    #0D2B55;
+  --blue:    #1565C0;
+  --cyan:    #29B6E8;
+  --green-wa:#25D366;
+  --bg:      #EEF2F7;
+  --surface: #FFFFFF;
+  --card-bg: #1A3460;
+  --text:    #0D2B55;
+  --muted:   #607090;
+  --border:  #D0DAE8;
+  --danger:  #E53935;
+  --success: #2E7D32;
+}
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:'Barlow',sans-serif; overflow-x:hidden; }
+
+/* ══════════════════════ SITE PÚBLICO ══════════════════════ */
+header { background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 60%,var(--cyan) 100%); padding:56px 24px 48px; text-align:center; position:relative; overflow:hidden; }
+header::before { content:''; position:absolute; width:500px; height:500px; background:rgba(255,255,255,.05); border-radius:50%; top:-200px; left:-100px; pointer-events:none; }
+header::after  { content:''; position:absolute; width:350px; height:350px; background:rgba(255,255,255,.04); border-radius:50%; bottom:-150px; right:-60px; pointer-events:none; }
+.badge { display:inline-block; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:600; letter-spacing:3px; text-transform:uppercase; padding:5px 18px; border-radius:50px; margin-bottom:18px; position:relative; }
+header h1 { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:clamp(42px,8vw,80px); color:#fff; letter-spacing:2px; text-transform:uppercase; line-height:1; position:relative; }
+header h2 { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:clamp(26px,5vw,50px); color:var(--cyan); letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; position:relative; }
+header p  { color:rgba(255,255,255,.75); font-size:15px; margin-bottom:28px; position:relative; }
+.header-wa { display:inline-flex; align-items:center; gap:9px; background:var(--green-wa); color:#fff; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:16px; letter-spacing:1px; text-transform:uppercase; text-decoration:none; padding:13px 28px; border-radius:6px; position:relative; transition:filter .2s,transform .2s; box-shadow:0 6px 24px rgba(37,211,102,.35); }
+.header-wa:hover { filter:brightness(1.1); transform:translateY(-2px); }
+.nav-wrap { background:var(--navy); display:flex; justify-content:center; flex-wrap:wrap; gap:4px 6px; padding:14px 16px; }
+.tab { font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:13px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,.6); background:transparent; border:1px solid rgba(255,255,255,.2); padding:7px 18px; border-radius:4px; cursor:pointer; transition:all .2s; }
+.tab:hover { color:#fff; border-color:rgba(255,255,255,.5); }
+.tab.active { background:#fff; color:var(--navy); border-color:#fff; }
+.month-section { padding:0 20px; max-width:1320px; margin:0 auto; }
+.month-title { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:13px; letter-spacing:4px; text-transform:uppercase; color:var(--blue); padding:36px 0 12px; display:flex; align-items:center; gap:14px; }
+.month-title::after { content:''; flex:1; height:2px; background:var(--border); }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:20px; padding-bottom:12px; }
+.card { background:var(--surface); border-radius:10px; overflow:hidden; box-shadow:0 2px 12px rgba(13,43,85,.1); transition:transform .25s,box-shadow .25s; animation:fadeUp .4s both; display:flex; flex-direction:column; }
+.card:hover { transform:translateY(-4px); box-shadow:0 10px 32px rgba(13,43,85,.18); }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+.card-head { background:var(--card-bg); padding:16px 20px 14px; }
+.card-head-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; }
+.card-head h3 { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:20px; color:#fff; letter-spacing:.5px; text-transform:uppercase; line-height:1.15; flex:1; padding-right:12px; }
+.hours-badge { background:rgba(255,255,255,.12); color:rgba(255,255,255,.8); font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:13px; letter-spacing:1px; padding:3px 10px; border-radius:4px; white-space:nowrap; margin-top:2px; }
+.card-subtitle { font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--cyan); }
+.tag { display:inline-block; font-family:'Barlow Condensed',sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; padding:3px 9px; border-radius:3px; margin-top:8px; }
+.tag-qual { background:rgba(245,166,35,.18); color:#c07800; border:1px solid rgba(245,166,35,.5); }
+.tag-tech { background:rgba(232,0,13,.14);   color:#b80009; border:1px solid rgba(232,0,13,.3); }
+.tag-aper { background:rgba(41,182,232,.14); color:#0b7ea8; border:1px solid rgba(41,182,232,.3); }
+.card-table { width:100%; border-collapse:collapse; font-size:14px; }
+.card-table thead tr { background:var(--bg); border-bottom:2px solid var(--border); }
+.card-table thead th { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); padding:10px 16px; text-align:left; }
+.card-table thead th:last-child { text-align:right; }
+.card-table tbody tr { border-bottom:1px solid var(--border); transition:background .15s; }
+.card-table tbody tr:last-child { border-bottom:none; }
+.card-table tbody tr:hover { background:#f0f5ff; }
+.card-table td { padding:11px 16px; color:var(--text); vertical-align:middle; }
+.card-table td:last-child { text-align:right; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:18px; color:var(--blue); white-space:nowrap; }
+.card-table td small { display:block; font-size:11px; color:var(--muted); font-weight:400; }
+.card-table .lbl { font-weight:600; color:var(--navy); }
+.card-foot { padding:14px 16px; border-top:1px solid var(--border); background:#fafcff; margin-top:auto; }
+.btn-wa { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:var(--green-wa); color:#fff; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:15px; letter-spacing:1px; text-transform:uppercase; text-decoration:none; padding:12px; border-radius:6px; transition:filter .2s,transform .15s; box-shadow:0 3px 12px rgba(37,211,102,.25); }
+.btn-wa:hover { filter:brightness(1.08); transform:scale(1.01); }
+.wa-icon { width:18px; height:18px; fill:#fff; flex-shrink:0; }
+footer { background:var(--navy); color:rgba(255,255,255,.55); text-align:center; padding:36px 24px 48px; font-size:13px; line-height:2; margin-top:48px; }
+footer strong { color:#fff; }
+footer a.link { color:var(--cyan); text-decoration:none; }
+footer em { color:rgba(255,255,255,.3); font-style:normal; }
+.footer-wa { display:inline-flex; align-items:center; gap:8px; background:var(--green-wa); color:#fff; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:15px; letter-spacing:1px; text-transform:uppercase; text-decoration:none; padding:12px 26px; border-radius:6px; margin-top:16px; transition:filter .2s; }
+.footer-wa:hover { filter:brightness(1.1); }
+.card.hidden { display:none; }
+.month-section.hidden { display:none; }
+.admin-entry { color:rgba(255,255,255,.15); font-size:11px; text-decoration:none; cursor:pointer; margin-top:12px; display:inline-block; transition:color .2s; letter-spacing:2px; }
+.admin-entry:hover { color:rgba(255,255,255,.45); }
+
+/* ══════════════════════ MODAL LOGIN ══════════════════════ */
+.overlay { position:fixed; inset:0; background:rgba(0,0,0,.65); backdrop-filter:blur(4px); z-index:900; display:flex; align-items:center; justify-content:center; animation:ovIn .2s; }
+.overlay.hidden { display:none; }
+@keyframes ovIn { from{opacity:0} to{opacity:1} }
+.login-box { background:#fff; border-radius:14px; padding:40px; width:370px; max-width:92vw; box-shadow:0 24px 64px rgba(0,0,0,.35); }
+.login-logo { text-align:center; margin-bottom:20px; }
+.login-logo span { display:inline-block; background:var(--navy); color:#fff; font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:13px; letter-spacing:3px; padding:8px 22px; border-radius:6px; }
+.login-box h2 { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:22px; color:var(--navy); text-align:center; margin-bottom:4px; }
+.login-box p { color:var(--muted); font-size:13px; text-align:center; margin-bottom:22px; }
+.fg { margin-bottom:15px; }
+.fg label { display:block; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+.fg input, .fg select, .fg textarea { width:100%; border:1.5px solid var(--border); border-radius:6px; padding:10px 13px; font-family:'Barlow',sans-serif; font-size:14px; color:var(--text); background:#fff; transition:border-color .2s; outline:none; }
+.fg input:focus, .fg select:focus, .fg textarea:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(21,101,192,.1); }
+.btn-submit { width:100%; background:var(--blue); color:#fff; border:none; border-radius:6px; padding:12px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:15px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:filter .2s; margin-top:4px; }
+.btn-submit:hover { filter:brightness(1.1); }
+.login-err { color:var(--danger); font-size:13px; text-align:center; margin-top:8px; display:none; }
+.login-cancel { display:block; text-align:center; margin-top:12px; color:var(--muted); font-size:13px; cursor:pointer; }
+.login-cancel:hover { text-decoration:underline; }
+
+/* ══════════════════════ PAINEL ADMIN ══════════════════════ */
+#adm { display:none; min-height:100vh; background:#F1F4F9; flex-direction:column; }
+#adm.show { display:flex; }
+
+/* Topbar */
+.adm-top { background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 20px; height:54px; position:sticky; top:0; z-index:200; }
+.adm-brand { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:17px; letter-spacing:2px; text-transform:uppercase; }
+.adm-brand span { color:var(--cyan); }
+.adm-acts { display:flex; gap:8px; }
+.tbtn { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); color:#fff; font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:12px; letter-spacing:1px; text-transform:uppercase; padding:6px 14px; border-radius:4px; cursor:pointer; transition:background .2s; white-space:nowrap; }
+.tbtn:hover { background:rgba(255,255,255,.2); }
+.tbtn.red { background:rgba(229,57,53,.3); border-color:rgba(229,57,53,.5); }
+.tbtn.red:hover { background:rgba(229,57,53,.5); }
+
+/* Tabs */
+.adm-tabs { background:#1A3460; display:flex; gap:2px; padding:0 16px; overflow-x:auto; }
+.adm-tab { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:13px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,.5); padding:13px 18px; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; transition:all .2s; }
+.adm-tab:hover { color:rgba(255,255,255,.8); }
+.adm-tab.on { color:#fff; border-bottom-color:var(--cyan); }
+
+/* Content */
+.adm-body { flex:1; padding:24px 20px; max-width:1200px; margin:0 auto; width:100%; }
+
+/* Alert global */
+.g-alert { padding:11px 16px; border-radius:6px; font-size:13px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.g-alert.ok { background:#E8F5E9; color:#2E7D32; border:1px solid #A5D6A7; }
+.g-alert.ko { background:#FFEBEE; color:#C62828; border:1px solid #EF9A9A; }
+.g-alert.hidden { display:none; }
+
+/* Stats */
+.stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:14px; margin-bottom:24px; }
+.sc { background:#fff; border-radius:8px; padding:18px; box-shadow:0 2px 8px rgba(0,0,0,.07); border-left:4px solid var(--blue); }
+.sc.g { border-left-color:var(--green-wa); }
+.sc.c { border-left-color:var(--cyan); }
+.sc.w { border-left-color:#F57F17; }
+.sc .v { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:34px; color:var(--navy); line-height:1; }
+.sc .l { font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+
+/* Section header */
+.sh { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
+.sh h3 { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:19px; color:var(--navy); text-transform:uppercase; letter-spacing:1px; }
+
+/* Buttons */
+.btn { display:inline-flex; align-items:center; gap:5px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; letter-spacing:1px; text-transform:uppercase; padding:8px 16px; border-radius:5px; cursor:pointer; border:none; transition:filter .15s; white-space:nowrap; }
+.btn:hover { filter:brightness(1.08); }
+.b-blue { background:var(--blue); color:#fff; }
+.b-navy { background:var(--navy); color:#fff; }
+.b-green { background:var(--green-wa); color:#fff; }
+.b-red { background:#E53935; color:#fff; }
+.b-gray { background:#DDE3ED; color:var(--navy); }
+.b-sm { padding:5px 11px; font-size:11px; }
+
+/* Data table */
+.dt { background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.07); width:100%; overflow-x:auto; }
+.dt table { width:100%; border-collapse:collapse; font-size:13px; min-width:600px; }
+.dt thead tr { background:var(--bg); border-bottom:2px solid var(--border); }
+.dt thead th { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); padding:11px 14px; text-align:left; white-space:nowrap; }
+.dt tbody tr { border-bottom:1px solid var(--border); transition:background .12s; }
+.dt tbody tr:last-child { border-bottom:none; }
+.dt tbody tr:hover { background:#f4f8ff; }
+.dt td { padding:11px 14px; vertical-align:middle; }
+.dt .nm { font-weight:600; color:var(--navy); font-size:14px; }
+.dt .sub { font-size:11px; color:var(--muted); }
+.dt .row-acts { display:flex; gap:6px; }
+.abadge { display:inline-block; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:700; font-family:'Barlow Condensed',sans-serif; letter-spacing:1px; text-transform:uppercase; }
+.abadge.on { background:rgba(46,125,50,.1); color:#2E7D32; border:1px solid rgba(46,125,50,.3); }
+.abadge.off { background:rgba(229,57,53,.09); color:#C62828; border:1px solid rgba(229,57,53,.25); }
+.tinl { display:inline-block; font-family:'Barlow Condensed',sans-serif; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:2px 7px; border-radius:3px; }
+
+/* Form panel */
+.fp { background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,.07); overflow:hidden; margin-bottom:22px; }
+.fp-head { background:var(--navy); color:#fff; padding:13px 18px; display:flex; align-items:center; justify-content:space-between; }
+.fp-head h4 { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:15px; letter-spacing:1px; text-transform:uppercase; }
+.fp-body { padding:22px; }
+.fr { display:grid; gap:14px; margin-bottom:14px; }
+.fr.c2 { grid-template-columns:1fr 1fr; }
+.fr.c3 { grid-template-columns:1fr 1fr 1fr; }
+.fr.c1 { grid-template-columns:1fr; }
+.fr.c4 { grid-template-columns:1fr 1fr 1fr 1fr; }
+.fg input[type=date] { cursor:pointer; color-scheme:light; }
+
+/* Parcelas */
+.parc-wrap { border:1.5px solid var(--border); border-radius:6px; overflow:hidden; }
+.parc-header { display:flex; gap:8px; padding:7px 11px 6px; background:var(--bg); border-bottom:1.5px solid var(--border); }
+.parc-header span { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); }
+.parc-header .ph-tipo { flex:1.4; }
+.parc-header .ph-det  { flex:1; }
+.parc-header .ph-val  { flex:.9; text-align:right; }
+.parc-header .ph-del  { width:28px; }
+.parc-row { display:flex; gap:8px; align-items:center; padding:9px 11px; border-bottom:1px solid var(--border); background:#fff; }
+.parc-row:last-child { border-bottom:none; }
+.parc-row input { flex:1; border:1.5px solid var(--border); border-radius:4px; padding:7px 9px; font-size:13px; font-family:'Barlow',sans-serif; outline:none; transition:border-color .2s; min-width:0; }
+.parc-row input:focus { border-color:var(--blue); }
+.parc-row select.parc-tipo { flex:1.4; border:1.5px solid var(--border); border-radius:4px; padding:7px 9px; font-size:13px; font-family:'Barlow',sans-serif; outline:none; background:#fff; cursor:pointer; transition:border-color .2s; min-width:0; }
+.parc-row select.parc-tipo:focus { border-color:var(--blue); }
+.parc-row input.val-input { flex:.9; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:14px; color:var(--blue); text-align:right; }
+.parc-del { background:none; border:none; cursor:pointer; color:var(--danger); font-size:16px; padding:3px 6px; opacity:.55; transition:opacity .2s; flex-shrink:0; }
+.parc-del:hover { opacity:1; }
+.parc-add { padding:9px 11px; background:#fafcff; }
+
+/* Mes list */
+.mes-list { display:flex; flex-direction:column; gap:8px; }
+.mes-item { background:#fff; border-radius:6px; border:1.5px solid var(--border); padding:13px 14px; display:flex; align-items:center; gap:12px; }
+.mes-item .mi-label { flex:1; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:15px; text-transform:uppercase; color:var(--navy); }
+.mes-item .mi-ct { font-size:12px; color:var(--muted); }
+
+/* Two-col layout */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+
+/* Backup */
+.bcard { background:#fff; border-radius:8px; padding:22px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+.bcard h4 { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:15px; color:var(--navy); text-transform:uppercase; margin-bottom:6px; }
+.bcard p { font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.6; }
+.imp-area { width:100%; min-height:140px; font-family:monospace; font-size:12px; border:1.5px solid var(--border); border-radius:6px; padding:11px; outline:none; resize:vertical; }
+.imp-area:focus { border-color:var(--blue); }
+.pw-err { padding:9px 13px; border-radius:6px; font-size:13px; margin-top:10px; background:#FFEBEE; color:#C62828; border:1px solid #EF9A9A; }
+.pw-err.hidden { display:none; }
+
+@media(max-width:640px) {
+  .fr.c2,.fr.c3,.fr.c4 { grid-template-columns:1fr; }
+  .two-col { grid-template-columns:1fr; }
+  .adm-tabs { gap:0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ SITE PÚBLICO ═══════════ -->
+<div id="pub">
+  <header>
+    <div class="badge" id="hdr-badge">SESI SENAI LAGOA — PORTO VELHO / RO</div>
+    <h1>Programação de Cursos</h1>
+    <h2 id="hdr-titulo">Qualificações Profissionais 2026</h2>
+    <p id="hdr-end">Av. Rio de Janeiro, 4734 – Bairro Lagoa &nbsp;|&nbsp; Tel.: (69) 3217-9819 &nbsp;|&nbsp; Turmas noturnas</p>
+    <a class="header-wa" id="hdr-wa" href="https://wa.me/message/I4YSP5CYRGURC1" target="_blank" rel="noopener">
+      <svg class="wa-icon" viewBox="0 0 32 32"><path d="M16 3C9 3 3.3 8.7 3.3 15.7c0 2.3.6 4.5 1.7 6.4L3 29l7.2-2c1.8 1 3.8 1.5 5.8 1.5 7 0 12.7-5.7 12.7-12.7S23 3 16 3zm6.4 17.4c-.3.8-1.6 1.5-2.2 1.6-.6.1-1.3.1-2-.1-.4-.1-1-.3-1.7-.6-3-1.3-5-4.4-5.1-4.6-.1-.2-1-1.4-1-2.6s.6-1.9.9-2.1c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .6l-.5.6c-.1.1-.2.2-.1.4.4.7 1 1.4 1.7 1.9.7.5 1.4.8 1.9.9.2.1.3 0 .4-.1l.6-.7c.1-.2.3-.2.5-.1l2 .9c.2.1.3.2.3.3l-.1.5z"/></svg>
+      Fale com o Atendimento
+    </a>
+  </header>
+
+  <nav class="nav-wrap" id="pub-nav"></nav>
+  <div id="pub-secs"></div>
+
+  <footer>
+    <strong id="ft-nome">SESI SENAI LAGOA</strong><br>
+    <span id="ft-end">Av. Rio de Janeiro, 4734 – Bairro Lagoa, Porto Velho – RO</span><br>
+    Tel.: (69) 3217-9819 &nbsp;|&nbsp;
+    <a class="link" href="https://portal.fiero.org.br/senai" target="_blank">portal.fiero.org.br/senai</a><br>
+    <em>* Programação sujeita a alteração de datas e valores.</em><br>
+    <a class="footer-wa" id="ft-wa" href="https://wa.me/message/I4YSP5CYRGURC1" target="_blank" rel="noopener">
+      <svg class="wa-icon" viewBox="0 0 32 32"><path d="M16 3C9 3 3.3 8.7 3.3 15.7c0 2.3.6 4.5 1.7 6.4L3 29l7.2-2c1.8 1 3.8 1.5 5.8 1.5 7 0 12.7-5.7 12.7-12.7S23 3 16 3zm6.4 17.4c-.3.8-1.6 1.5-2.2 1.6-.6.1-1.3.1-2-.1-.4-.1-1-.3-1.7-.6-3-1.3-5-4.4-5.1-4.6-.1-.2-1-1.4-1-2.6s.6-1.9.9-2.1c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .6l-.5.6c-.1.1-.2.2-.1.4.4.7 1 1.4 1.7 1.9.7.5 1.4.8 1.9.9.2.1.3 0 .4-.1l.6-.7c.1-.2.3-.2.5-.1l2 .9c.2.1.3.2.3.3l-.1.5z"/></svg>
+      Converse com o Atendimento SESI SENAI LAGOA
+    </a>
+    <br><span class="admin-entry" onclick="openLogin()">● ADMIN</span>
+  </footer>
+</div>
+
+<!-- ═══════════ MODAL LOGIN ═══════════ -->
+<div class="overlay hidden" id="login-ov">
+  <div class="login-box">
+    <div class="login-logo"><span>SENAI ADMIN</span></div>
+    <h2>Acesso Administrativo</h2>
+    <p>Informe suas credenciais para gerenciar os cursos.</p>
+    <div class="fg">
+      <label>Usuário</label>
+      <input type="text" id="l-user" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="fg">
+      <label>Senha</label>
+      <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-submit" onclick="doLogin()">Entrar</button>
+    <div class="login-err" id="l-err">Usuário ou senha incorretos.</div>
+    <span class="login-cancel" onclick="closeLogin()">Cancelar</span>
+  </div>
+</div>
+
+<!-- ═══════════ PAINEL ADMIN ═══════════ -->
+<div id="adm">
+  <div class="adm-top">
+    <div class="adm-brand">SENAI <span>ADMIN</span></div>
+    <div class="adm-acts">
+      <button class="tbtn" onclick="refreshPub(); toast('Site atualizado!','ok')">⟳ Atualizar</button>
+      <button class="tbtn" onclick="goPublic()">👁 Ver Site</button>
+      <button class="tbtn red" onclick="logout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="adm-tabs">
+    <div class="adm-tab on"  onclick="goTab('dash',this)">📊 Dashboard</div>
+    <div class="adm-tab"     onclick="goTab('cursos',this)">📚 Cursos</div>
+    <div class="adm-tab"     onclick="goTab('cron',this)">📅 Cronograma</div>
+    <div class="adm-tab"     onclick="goTab('cfg',this)">⚙️ Configurações</div>
+    <div class="adm-tab"     onclick="goTab('bkp',this)">💾 Backup</div>
+  </div>
+
+  <div class="adm-body">
+    <div class="g-alert hidden" id="g-alert"></div>
+
+    <!-- DASHBOARD -->
+    <div id="tp-dash">
+      <div class="stats" id="stats"></div>
+      <div class="sh"><h3>Cursos por Mês</h3></div>
+      <div class="dt"><table>
+        <thead><tr><th>Mês</th><th>Qualificação</th><th>Técnico</th><th>Aperfeiçoamento</th><th>Total</th></tr></thead>
+        <tbody id="dash-rows"></tbody>
+      </table></div>
+    </div>
+
+    <!-- CURSOS -->
+    <div id="tp-cursos" style="display:none">
+      <div class="fp" id="curso-fp">
+        <div class="fp-head">
+          <h4 id="fp-title">Novo Curso</h4>
+          <button class="btn b-gray b-sm" onclick="cancelF()">✕ Cancelar</button>
+        </div>
+        <div class="fp-body">
+          <input type="hidden" id="f-id">
+          <div class="fr c4">
+            <div class="fg"><label>Mês de Divulgação</label>
+              <select id="f-mes-nome">
+                <option value="janeiro">Janeiro</option><option value="fevereiro">Fevereiro</option>
+                <option value="março">Março</option><option value="abril">Abril</option>
+                <option value="maio">Maio</option><option value="junho">Junho</option>
+                <option value="julho">Julho</option><option value="agosto">Agosto</option>
+                <option value="setembro">Setembro</option><option value="outubro">Outubro</option>
+                <option value="novembro">Novembro</option><option value="dezembro">Dezembro</option>
+              </select>
+            </div>
+            <div class="fg"><label>Ano</label><select id="f-mes-ano"></select></div>
+            <div class="fg"><label>Tipo</label>
+              <select id="f-tipo">
+                <option value="qualificacao">Qualificação Profissional</option>
+                <option value="tecnico">Ensino Técnico</option>
+                <option value="aperfeicoamento">Aperfeiçoamento</option>
+              </select>
+            </div>
+            <div class="fg"><label>Carga Horária</label><input type="text" id="f-horas" placeholder="160h"></div>
+          </div>
+          <div class="fr c1">
+            <div class="fg"><label>Nome do Curso</label><input type="text" id="f-nome" placeholder="Nome completo do curso"></div>
+          </div>
+          <div class="fr c2">
+            <div class="fg"><label>Data de Início</label><input type="date" id="f-ini"></div>
+            <div class="fg"><label>Data de Término</label><input type="date" id="f-fim"></div>
+          </div>
+          <div class="fr c2">
+            <div class="fg"><label>Turno</label>
+              <select id="f-turno">
+                <option>Noturno</option><option>Diurno</option><option>Matutino</option><option>Vespertino</option>
+              </select>
+            </div>
+            <div class="fg"><label>Código (opcional)</label><input type="text" id="f-cod" placeholder="QUA-MRC-N-0002"></div>
+          </div>
+          <div class="fg" style="margin-top:6px">
+            <label>Formas de Pagamento</label>
+            <div class="parc-wrap">
+              <div class="parc-header">
+                <span class="ph-tipo">Tipo de Pagamento</span>
+                <span class="ph-det">Detalhes</span>
+                <span class="ph-val">Valor</span>
+                <span class="ph-del"></span>
+              </div>
+              <div id="parc-ed"></div>
+            </div>
+            <div class="parc-add"><button class="btn b-gray b-sm" onclick="addParc()">+ Adicionar Forma de Pagamento</button></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap">
+            <button class="btn b-blue" onclick="saveCurso()">💾 Salvar Curso</button>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+              <input type="checkbox" id="f-ativo" checked> Ativo (visível no site)
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="sh">
+        <h3>Todos os Cursos &nbsp;<span id="c-ct" style="font-size:14px;font-weight:400;color:var(--muted)"></span></h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select id="filt-mes" onchange="renderList()"
+            style="border:1.5px solid var(--border);border-radius:5px;padding:7px 10px;font-size:13px;outline:none;background:#fff">
+            <option value="">Todos os meses</option>
+          </select>
+          <button class="btn b-blue" onclick="newCurso()">+ Novo Curso</button>
+        </div>
+      </div>
+      <div class="dt"><table>
+        <thead><tr><th>Curso</th><th>Mês</th><th>Tipo</th><th>Período</th><th>Turno</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="c-list"></tbody>
+      </table></div>
+    </div>
+
+    <!-- CRONOGRAMA -->
+    <div id="tp-cron" style="display:none">
+      <div class="two-col">
+        <div>
+          <div class="sh"><h3>Meses Ativos</h3></div>
+          <div class="fp"><div class="fp-body">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Gerencie quais meses aparecem no site.</p>
+            <div class="mes-list" id="mes-list"></div>
+            <hr style="border:none;border-top:1.5px solid var(--border);margin:16px 0">
+            <p style="font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px">Adicionar novo mês</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <input type="text" id="nm-id"    placeholder="Chave (ex: julho)" style="flex:1;min-width:120px;border:1.5px solid var(--border);border-radius:5px;padding:8px 11px;font-size:13px;outline:none">
+              <input type="text" id="nm-label" placeholder="Rótulo (ex: Julho 2026)" style="flex:2;min-width:140px;border:1.5px solid var(--border);border-radius:5px;padding:8px 11px;font-size:13px;outline:none">
+              <button class="btn b-blue" onclick="addMes()">+ Mês</button>
+            </div>
+          </div></div>
+        </div>
+        <div>
+          <div class="sh"><h3>Publicação</h3></div>
+          <div class="fp"><div class="fp-body">
+            <div class="fg"><label>Ano de Divulgação</label><input type="number" id="cfg-ano" min="2024" max="2035" placeholder="2026"></div>
+            <div class="fg"><label>Título exibido no cabeçalho</label><input type="text" id="cfg-tit" placeholder="Qualificações Profissionais 2026"></div>
+            <div class="fg">
+              <label>Mês de Atualização atual</label>
+              <select id="cfg-mesatual">
+                <option value="">— Não exibir —</option>
+                <option>Janeiro</option><option>Fevereiro</option><option>Março</option><option>Abril</option>
+                <option>Maio</option><option>Junho</option><option>Julho</option><option>Agosto</option>
+                <option>Setembro</option><option>Outubro</option><option>Novembro</option><option>Dezembro</option>
+              </select>
+            </div>
+            <button class="btn b-blue" onclick="saveCron()">💾 Salvar Publicação</button>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIGURAÇÕES -->
+    <div id="tp-cfg" style="display:none">
+      <div class="two-col">
+        <div>
+          <div class="sh"><h3>Informações da Unidade</h3></div>
+          <div class="fp"><div class="fp-body">
+            <div class="fg"><label>Nome (badge superior)</label><input type="text" id="cc-unid" placeholder="SESI SENAI LAGOA — PORTO VELHO / RO"></div>
+            <div class="fg"><label>Endereço / Contato (cabeçalho)</label><input type="text" id="cc-end" placeholder="Av. Rio de Janeiro, 4734..."></div>
+            <div class="fg"><label>Link do WhatsApp</label><input type="text" id="cc-wa" placeholder="https://wa.me/message/..."></div>
+            <div class="fg"><label>Rodapé — Nome da Unidade</label><input type="text" id="cc-ftnome" placeholder="SESI SENAI LAGOA"></div>
+            <div class="fg"><label>Rodapé — Endereço completo</label><input type="text" id="cc-ftend" placeholder="Av. Rio de Janeiro, 4734 – Bairro Lagoa..."></div>
+            <button class="btn b-blue" onclick="saveCfg()">💾 Salvar</button>
+          </div></div>
+        </div>
+        <div>
+          <div class="sh"><h3>Alterar Senha</h3></div>
+          <div class="fp"><div class="fp-body">
+            <div class="fg"><label>Senha Atual</label><input type="password" id="pw-cur" placeholder="••••••••"></div>
+            <div class="fg"><label>Nova Senha (mín. 6 caracteres)</label><input type="password" id="pw-new" placeholder="••••••••"></div>
+            <div class="fg"><label>Confirmar Nova Senha</label><input type="password" id="pw-cfm" placeholder="••••••••"></div>
+            <button class="btn b-blue" onclick="chgPw()">🔐 Alterar Senha</button>
+            <div class="pw-err hidden" id="pw-err"></div>
+          </div></div>
+
+          <div class="sh" style="margin-top:20px"><h3>Usuário Admin</h3></div>
+          <div class="fp"><div class="fp-body">
+            <div class="fg"><label>Nome de Usuário</label><input type="text" id="cc-user" placeholder="admin"></div>
+            <button class="btn b-blue" onclick="saveUser()">💾 Salvar Usuário</button>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BACKUP -->
+    <div id="tp-bkp" style="display:none">
+      <div class="two-col" style="margin-bottom:20px">
+        <div class="bcard">
+          <h4>📤 Exportar Dados</h4>
+          <p>Baixe um arquivo JSON com todos os cursos e configurações. Ideal para backup antes de grandes alterações ou para mover dados entre computadores.</p>
+          <button class="btn b-navy" onclick="exportDB()">⬇ Exportar JSON</button>
+        </div>
+        <div class="bcard">
+          <h4>📥 Importar Dados</h4>
+          <p>Cole o conteúdo de um JSON exportado anteriormente. <strong>Atenção:</strong> substitui todos os dados atuais sem possibilidade de desfazer.</p>
+          <textarea class="imp-area" id="imp-area" placeholder='{"config":{...},"meses":[...],"cursos":[]}'></textarea>
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <button class="btn b-red" onclick="importDB()">⬆ Importar</button>
+            <button class="btn b-gray" onclick="document.getElementById('imp-area').value=''">Limpar</button>
+          </div>
+        </div>
+      </div>
+      <div class="bcard">
+        <h4>⚠️ Resetar para Dados Originais</h4>
+        <p>Apaga todos os dados e restaura os cursos originais do arquivo. <strong>Esta ação não pode ser desfeita.</strong></p>
+        <button class="btn b-red" onclick="if(confirm('Confirmar? Todos os dados serão perdidos.'))resetDB()">🗑 Resetar Tudo</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ───────────────────────────────────────────────
+   BANCO DE DADOS (localStorage)
+─────────────────────────────────────────────── */
+const DB_KEY = 'senai_v3';
+const DEFAULT_PW = 'senai@2026';
+
+const DEFAULT_DB = {
+  config:{
+    username:'admin', passwordHash:'',
+    unidade:'SESI SENAI LAGOA — PORTO VELHO / RO',
+    endereco:'Av. Rio de Janeiro, 4734 – Bairro Lagoa &nbsp;|&nbsp; Tel.: (69) 3217-9819 &nbsp;|&nbsp; Turmas noturnas',
+    whatsapp:'https://wa.me/message/I4YSP5CYRGURC1',
+    ftNome:'SESI SENAI LAGOA',
+    ftEnd:'Av. Rio de Janeiro, 4734 – Bairro Lagoa, Porto Velho – RO',
+    ano:2026, titulo:'Qualificações Profissionais 2026', mesAtual:'Maio'
+  },
+  meses:[
+    {id:'maio',  label:'Maio 2026'},
+    {id:'junho', label:'Junho 2026'}
+  ],
+  cursos:[
+    {id:'c1', mes:'maio',  tipo:'qualificacao',    nome:'Modelagem de Roupas',                                         horas:'160h',  ini:'11/05/2026', fim:'06/07/2026', turno:'Noturno', cod:'', ativo:true,
+     parcelas:[['À Vista','','R$ 990,00'],['Boleto','3x sem juros','R$ 330,00'],['Cartão','10x sem juros','R$ 99,00']]},
+    {id:'c2', mes:'maio',  tipo:'qualificacao',    nome:'Fabricação de Móveis Planejados — Marcenaria Moderna',        horas:'160h',  ini:'30/05/2026', fim:'03/08/2026', turno:'Noturno', cod:'', ativo:true,
+     parcelas:[['À Vista','','R$ 990,00'],['Boleto','3x sem juros','R$ 330,00'],['Cartão','10x sem juros','R$ 99,00']]},
+    {id:'c3', mes:'maio',  tipo:'tecnico',         nome:'Técnico em Refrigeração e Climatização',                      horas:'1200h', ini:'30/05/2026', fim:'30/11/2027', turno:'Noturno', cod:'', ativo:true,
+     parcelas:[['À Vista','','R$ 9.648,00'],['Cartão','10x sem juros','R$ 964,00'],['Boleto','18x sem juros','R$ 536,00']]},
+    {id:'c4', mes:'maio',  tipo:'tecnico',         nome:'Técnico em Segurança do Trabalho',                            horas:'1200h', ini:'30/05/2026', fim:'30/11/2027', turno:'Noturno', cod:'', ativo:true,
+     parcelas:[['À Vista','','R$ 9.500,00'],['Cartão','10x sem juros','R$ 950,00'],['Boleto','18x sem juros','R$ 527,78']]},
+    {id:'c5', mes:'maio',  tipo:'qualificacao',    nome:'Fabricação de Bolos Decorados',                               horas:'160h',  ini:'30/05/2026', fim:'03/08/2026', turno:'Noturno', cod:'', ativo:true,
+     parcelas:[['À Vista','','R$ 1.221,00'],['Boleto','3x sem juros','R$ 407,00'],['Cartão','10x sem juros','R$ 122,10']]},
+    {id:'c6', mes:'maio',  tipo:'qualificacao',    nome:'Mecânico de Manutenção, Suspensão, Direção e Freio',          horas:'160h',  ini:'30/05/2026', fim:'03/08/2026', turno:'Noturno', cod:'', ativo:true,
+     parcelas:[['À Vista','','R$ 1.080,00'],['Boleto','3x sem juros','R$ 360,00'],['Cartão','10x sem juros','R$ 108,00']]},
+    {id:'c7', mes:'maio',  tipo:'qualificacao',    nome:'Confeitaria Artística',                                        horas:'160h',  ini:'30/05/2026', fim:'03/08/2026', turno:'Noturno', cod:'', ativo:true,
+     parcelas:[['À Vista','','R$ 1.089,00'],['Boleto','3x sem juros','R$ 363,00'],['Cartão','10x sem juros','R$ 108,90']]},
+    {id:'c8', mes:'maio',  tipo:'qualificacao',    nome:'Sistemas de Ar Condicionado para Arquitetura',                horas:'160h',  ini:'30/05/2026', fim:'03/08/2026', turno:'Noturno', cod:'', ativo:true,
+     parcelas:[['À Vista','','R$ 1.139,00'],['Boleto','3x sem juros','R$ 379,67'],['Cartão','10x sem juros','R$ 113,90']]},
+    {id:'c9',  mes:'junho', tipo:'qualificacao',   nome:'Mecânico e Manutenção de Motocicleta',                        horas:'160h',  ini:'08/06/2026', fim:'31/07/2026', turno:'Noturno', cod:'', ativo:true,
+     parcelas:[['À Vista','','R$ 1.102,00'],['Boleto','3x sem juros','R$ 367,00'],['Cartão','10x sem juros','R$ 110,20']]},
+    {id:'c10', mes:'junho', tipo:'qualificacao',   nome:'Mecânico de Veículos Pesados — Diesel',                       horas:'160h',  ini:'08/06/2026', fim:'31/07/2026', turno:'Noturno', cod:'', ativo:true,
+     parcelas:[['À Vista','','R$ 1.089,00'],['Boleto','3x sem juros','R$ 363,00'],['Cartão','10x sem juros','R$ 108,90']]},
+    {id:'c11', mes:'junho', tipo:'qualificacao',   nome:'Mecânico de Refrigeração e Climatização Residencial',         horas:'160h',  ini:'15/06/2026', fim:'28/08/2026', turno:'Noturno', cod:'QUA-MRC-N-0002', ativo:true,
+     parcelas:[['À Vista','','R$ 1.102,00'],['Boleto','3x sem juros','R$ 367,00'],['Cartão','10x sem juros','R$ 110,20']]},
+    {id:'c12', mes:'junho', tipo:'aperfeicoamento',nome:'Operador de Drone',                                            horas:'40h',   ini:'15/06/2026', fim:'26/06/2026', turno:'Noturno', cod:'APP-ODD-N-0002', ativo:true,
+     parcelas:[['À Vista','','R$ 284,00'],['Cartão','10x sem juros','R$ 28,40']]},
+    {id:'c13', mes:'junho', tipo:'qualificacao',   nome:'Costureiro Sob Medida',                                        horas:'160h',  ini:'15/06/2026', fim:'28/08/2026', turno:'Noturno', cod:'QUA-CSM-N-0001', ativo:true,
+     parcelas:[['À Vista','','R$ 990,00'],['Boleto','3x sem juros','R$ 330,00'],['Cartão','10x sem juros','R$ 99,00']]}
+  ]
+};
+
+let DB = null;
+
+async function sha256(s) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(DB)); }
+function gid()    { return 'c'+Date.now()+Math.random().toString(36).substr(2,4); }
+
+async function initDB() {
+  const raw = localStorage.getItem(DB_KEY);
+  DB = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_DB));
+  if (!DB.config.passwordHash) { DB.config.passwordHash = await sha256(DEFAULT_PW); saveDB(); }
+}
+
+/* ───────────────────────────────────────────────
+   AUTH
+─────────────────────────────────────────────── */
+let logged = false;
+
+function openLogin() {
+  document.getElementById('login-ov').classList.remove('hidden');
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+  document.getElementById('l-err').style.display='none';
+  setTimeout(()=>document.getElementById('l-user').focus(),80);
+}
+function closeLogin() { document.getElementById('login-ov').classList.add('hidden'); }
+
+async function doLogin() {
+  const u=document.getElementById('l-user').value.trim();
+  const p=document.getElementById('l-pass').value;
+  const h=await sha256(p);
+  if(u===DB.config.username && h===DB.config.passwordHash) {
+    logged=true; closeLogin(); showAdmin();
+  } else {
+    document.getElementById('l-err').style.display='block';
+  }
+}
+
+function logout() {
+  logged=false;
+  document.getElementById('adm').classList.remove('show');
+  document.getElementById('pub').style.display='';
+}
+
+async function chgPw() {
+  const cur=document.getElementById('pw-cur').value;
+  const nw =document.getElementById('pw-new').value;
+  const cfm=document.getElementById('pw-cfm').value;
+  const err=document.getElementById('pw-err');
+  err.classList.add('hidden');
+  if(nw.length<6){err.textContent='Senha deve ter pelo menos 6 caracteres.';err.classList.remove('hidden');return;}
+  if(nw!==cfm){err.textContent='As senhas não coincidem.';err.classList.remove('hidden');return;}
+  if(await sha256(cur)!==DB.config.passwordHash){err.textContent='Senha atual incorreta.';err.classList.remove('hidden');return;}
+  DB.config.passwordHash=await sha256(nw); saveDB();
+  document.getElementById('pw-cur').value='';
+  document.getElementById('pw-new').value='';
+  document.getElementById('pw-cfm').value='';
+  toast('Senha alterada com sucesso!','ok');
+}
+
+function saveUser() {
+  const u=document.getElementById('cc-user').value.trim();
+  if(!u) return;
+  DB.config.username=u; saveDB(); toast('Usuário atualizado!','ok');
+}
+
+/* ───────────────────────────────────────────────
+   NAVEGAÇÃO ADMIN
+─────────────────────────────────────────────── */
+function showAdmin() {
+  document.getElementById('pub').style.display='none';
+  document.getElementById('adm').classList.add('show');
+  renderDash(); fillMesSels();
+}
+function goPublic() {
+  document.getElementById('adm').classList.remove('show');
+  document.getElementById('pub').style.display='';
+}
+
+const TABS=['dash','cursos','cron','cfg','bkp'];
+function goTab(name,el) {
+  document.querySelectorAll('.adm-tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  TABS.forEach(t=>document.getElementById('tp-'+t).style.display=t===name?'':'none');
+  if(name==='cursos')      renderList();
+  if(name==='cron')        renderCron();
+  if(name==='cfg')         renderCfg();
+}
+
+function toast(msg,type='ok') {
+  const el=document.getElementById('g-alert');
+  el.textContent=msg;
+  el.className='g-alert '+type;
+  setTimeout(()=>el.classList.add('hidden'),4000);
+}
+
+/* ───────────────────────────────────────────────
+   DASHBOARD
+─────────────────────────────────────────────── */
+function renderDash() {
+  const at=DB.cursos.filter(c=>c.ativo);
+  const tp={qualificacao:0,tecnico:0,aperfeicoamento:0};
+  at.forEach(c=>tp[c.tipo]++);
+  document.getElementById('stats').innerHTML=`
+    <div class="sc"><div class="v">${DB.cursos.length}</div><div class="l">Total Cursos</div></div>
+    <div class="sc g"><div class="v">${at.length}</div><div class="l">Ativos</div></div>
+    <div class="sc c"><div class="v">${DB.meses.length}</div><div class="l">Meses</div></div>
+    <div class="sc w"><div class="v">${DB.cursos.length-at.length}</div><div class="l">Inativos</div></div>
+    <div class="sc"><div class="v">${tp.qualificacao}</div><div class="l">Qualificação</div></div>
+    <div class="sc"><div class="v">${tp.tecnico}</div><div class="l">Técnico</div></div>
+    <div class="sc"><div class="v">${tp.aperfeicoamento}</div><div class="l">Aperfeiçoamento</div></div>`;
+
+  document.getElementById('dash-rows').innerHTML=DB.meses.map(m=>{
+    const cs=at.filter(c=>c.mes===m.id);
+    return`<tr><td><strong>${m.label}</strong></td><td>${cs.filter(c=>c.tipo==='qualificacao').length}</td><td>${cs.filter(c=>c.tipo==='tecnico').length}</td><td>${cs.filter(c=>c.tipo==='aperfeicoamento').length}</td><td><strong>${cs.length}</strong></td></tr>`;
+  }).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px">Nenhum mês configurado.</td></tr>';
+}
+
+/* ───────────────────────────────────────────────
+   LISTA DE CURSOS
+─────────────────────────────────────────────── */
+const TMAP={
+  qualificacao:   ['tag-qual','Qualificação'],
+  tecnico:        ['tag-tech','Técnico'],
+  aperfeicoamento:['tag-aper','Aperfeiçoamento']
+};
+
+const MES_NOMES = ['janeiro','fevereiro','março','abril','maio','junho',
+                   'julho','agosto','setembro','outubro','novembro','dezembro'];
+const MES_LABELS_MAP = {
+  janeiro:'Janeiro',fevereiro:'Fevereiro',março:'Março',abril:'Abril',
+  maio:'Maio',junho:'Junho',julho:'Julho',agosto:'Agosto',
+  setembro:'Setembro',outubro:'Outubro',novembro:'Novembro',dezembro:'Dezembro'
+};
+
+/* Converte DD/MM/YYYY → YYYY-MM-DD para input[type=date] */
+function toDateInput(s) {
+  if(!s) return '';
+  const m=s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  return m ? `${m[3]}-${m[2]}-${m[1]}` : '';
+}
+/* Converte YYYY-MM-DD → DD/MM/YYYY para armazenamento/exibição */
+function fromDateInput(s) {
+  if(!s) return '';
+  const m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : s;
+}
+
+function fillMesSels() {
+  // Ano selector: ano atual + 5 anos à frente
+  const anoAtual = new Date().getFullYear();
+  const anoSel   = document.getElementById('f-mes-ano');
+  anoSel.innerHTML = '';
+  for(let y=anoAtual; y<=anoAtual+5; y++) {
+    const opt=document.createElement('option');
+    opt.value=y; opt.textContent=y; anoSel.appendChild(opt);
+  }
+  // Filtro da lista usa os meses do DB
+  const opts=DB.meses.map(m=>`<option value="${m.id}">${m.label}</option>`).join('');
+  document.getElementById('filt-mes').innerHTML='<option value="">Todos os meses</option>'+opts;
+}
+
+function mesLabel(id) { return (DB.meses.find(m=>m.id===id)||{label:id}).label; }
+
+function renderList() {
+  const filt=document.getElementById('filt-mes').value;
+  const list=DB.cursos.filter(c=>!filt||c.mes===filt);
+  document.getElementById('c-ct').textContent='('+list.length+')';
+  document.getElementById('c-list').innerHTML=list.map(c=>{
+    const [tc,tl]=TMAP[c.tipo]||['',''];
+    return`<tr>
+      <td><div class="nm">${c.nome}</div><div class="sub">${c.horas}${c.cod?' · '+c.cod:''}</div></td>
+      <td>${mesLabel(c.mes)}</td>
+      <td><span class="tinl ${tc}">${tl}</span></td>
+      <td style="font-size:12px">${c.ini||''}${c.fim?' → '+c.fim:''}</td>
+      <td style="font-size:12px">${c.turno||'Noturno'}</td>
+      <td><span class="abadge ${c.ativo?'on':'off'}">${c.ativo?'Ativo':'Inativo'}</span></td>
+      <td><div class="row-acts">
+        <button class="btn b-blue b-sm" onclick="editCurso('${c.id}')">✏️ Editar</button>
+        <button class="btn b-red b-sm"  onclick="delCurso('${c.id}')">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">Nenhum curso encontrado.</td></tr>';
+}
+
+/* ───────────────────────────────────────────────
+   FORMULÁRIO DE CURSO
+─────────────────────────────────────────────── */
+let pRows=[];
+
+function newCurso() {
+  document.getElementById('fp-title').textContent='Novo Curso';
+  document.getElementById('f-id').value='';
+  // Mês e ano padrão: mês atual e ano atual
+  const hoje=new Date();
+  document.getElementById('f-mes-nome').value=MES_NOMES[hoje.getMonth()];
+  document.getElementById('f-mes-ano').value=hoje.getFullYear();
+  document.getElementById('f-tipo').value='qualificacao';
+  document.getElementById('f-horas').value='160h';
+  document.getElementById('f-nome').value='';
+  document.getElementById('f-ini').value='';
+  document.getElementById('f-fim').value='';
+  document.getElementById('f-turno').value='Noturno';
+  document.getElementById('f-cod').value='';
+  document.getElementById('f-ativo').checked=true;
+  pRows=[['À Vista','',''],['PIX','',''],['Boleto','',''],['Cartão de Crédito','10x sem juros','']];
+  renderParc(); document.getElementById('curso-fp').scrollIntoView({behavior:'smooth'});
+}
+
+function editCurso(id) {
+  const c=DB.cursos.find(x=>x.id===id); if(!c) return;
+  document.getElementById('fp-title').textContent='Editar Curso';
+  document.getElementById('f-id').value=c.id;
+  // Recuperar mês e ano a partir do registro em DB.meses
+  const mesEntry=DB.meses.find(m=>m.id===c.mes);
+  if(mesEntry) {
+    // label ex: "Maio 2026" ou "maio 2026"
+    const parts=mesEntry.label.split(/\s+/);
+    const nomeLower=(parts[0]||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    // mapear para valor do select (com acento correto)
+    const mesNomeVal=MES_NOMES.find(m=>m.normalize('NFD').replace(/[\u0300-\u036f]/g,'')=== nomeLower)||MES_NOMES[0];
+    document.getElementById('f-mes-nome').value=mesNomeVal;
+    document.getElementById('f-mes-ano').value=parts[1]||new Date().getFullYear();
+  } else {
+    // fallback: tentar extrair de c.mes (ex: "maio-2026")
+    const sp=c.mes.split('-');
+    document.getElementById('f-mes-nome').value=sp[0]||MES_NOMES[0];
+    document.getElementById('f-mes-ano').value=sp[1]||new Date().getFullYear();
+  }
+  document.getElementById('f-tipo').value=c.tipo;
+  document.getElementById('f-horas').value=c.horas;
+  document.getElementById('f-nome').value=c.nome;
+  document.getElementById('f-ini').value=toDateInput(c.ini||'');
+  document.getElementById('f-fim').value=toDateInput(c.fim||'');
+  document.getElementById('f-turno').value=c.turno||'Noturno';
+  document.getElementById('f-cod').value=c.cod||'';
+  document.getElementById('f-ativo').checked=c.ativo!==false;
+  pRows=c.parcelas.map(p=>[...p]);
+  renderParc(); document.getElementById('curso-fp').scrollIntoView({behavior:'smooth'});
+}
+
+function resetForm() {
+  document.getElementById('fp-title').textContent = 'Novo Curso';
+  document.getElementById('f-id').value    = '';
+  const hoje = new Date();
+  document.getElementById('f-mes-nome').value = MES_NOMES[hoje.getMonth()];
+  document.getElementById('f-mes-ano').value  = hoje.getFullYear();
+  document.getElementById('f-tipo').value  = 'qualificacao';
+  document.getElementById('f-horas').value = '160h';
+  document.getElementById('f-nome').value  = '';
+  document.getElementById('f-ini').value   = '';
+  document.getElementById('f-fim').value   = '';
+  document.getElementById('f-turno').value = 'Noturno';
+  document.getElementById('f-cod').value   = '';
+  document.getElementById('f-ativo').checked = true;
+  pRows = [['À Vista','',''],['PIX','',''],['Boleto','',''],['Cartão de Crédito','10x sem juros','']];
+  renderParc();
+  document.getElementById('curso-fp').scrollIntoView({behavior:'smooth'});
+}
+function cancelF() { resetForm(); }
+
+function saveCurso() {
+  const nome = document.getElementById('f-nome').value.trim();
+  if (!nome) { toast('Informe o nome do curso.', 'ko'); return; }
+
+  // Lê parcelas (select + inputs)
+  const parc = [];
+  document.querySelectorAll('#parc-ed .parc-row').forEach(r => {
+    const tipo = r.querySelector('select.parc-tipo')?.value || '';
+    const ins  = r.querySelectorAll('input');
+    parc.push([tipo, ins[0].value, ins[1].value]);
+  });
+
+  const id = document.getElementById('f-id').value;
+
+  // Confirmação antes de salvar
+  const acao = id ? 'Salvar as alterações no curso' : 'Cadastrar o novo curso';
+  if (!confirm(`${acao} "${nome}"?\n\nClique em OK para confirmar.`)) return;
+
+  // Montar mes ID e label
+  const mesNome = document.getElementById('f-mes-nome').value;
+  const mesAno  = document.getElementById('f-mes-ano').value;
+  const mesId   = mesNome + '-' + mesAno;
+  const mesLbl  = (MES_LABELS_MAP[mesNome] || mesNome) + ' ' + mesAno;
+  if (!DB.meses.find(m => m.id === mesId)) {
+    DB.meses.push({id: mesId, label: mesLbl});
+    fillMesSels();
+  }
+
+  const c = {
+    id:    id || gid(),
+    mes:   mesId,
+    tipo:  document.getElementById('f-tipo').value,
+    nome,
+    horas: document.getElementById('f-horas').value,
+    ini:   fromDateInput(document.getElementById('f-ini').value),
+    fim:   fromDateInput(document.getElementById('f-fim').value),
+    turno: document.getElementById('f-turno').value,
+    cod:   document.getElementById('f-cod').value,
+    ativo: document.getElementById('f-ativo').checked,
+    parcelas: parc
+  };
+
+  if (id) { const i = DB.cursos.findIndex(x => x.id === id); if (i >= 0) DB.cursos[i] = c; }
+  else     DB.cursos.push(c);
+
+  saveDB(); refreshPub(); renderList(); renderDash();
+  toast(id ? 'Curso atualizado com sucesso!' : 'Novo curso cadastrado com sucesso!', 'ok');
+
+  // Limpa o formulário para novo cadastro
+  resetForm();
+}
+
+function delCurso(id) {
+  if(!confirm('Excluir este curso?')) return;
+  DB.cursos=DB.cursos.filter(c=>c.id!==id);
+  saveDB(); refreshPub(); renderList(); renderDash();
+  toast('Curso removido.','ok');
+}
+
+/* ─── Tipos de pagamento ─── */
+const PAG_TIPOS = [
+  'À Vista', 'PIX', 'Boleto', 'Cartão de Crédito', 'Cartão de Débito',
+  'Cartão', 'Parcelado', 'Financiamento', 'Cheque'
+];
+
+/* Máscara de moeda BRL */
+function maskBRL(el) {
+  let v = el.value.replace(/\D/g, '');
+  if (!v) { el.value = ''; return; }
+  let num = parseInt(v, 10) / 100;
+  el.value = 'R$ ' + num.toFixed(2)
+    .replace('.', ',')
+    .replace(/(\d)(?=(\d{3})+(?=,))/g, '$1.');
+}
+/* Inicializa campo de valor já formatado */
+function initValInput(el) {
+  if (el.value && !el.value.startsWith('R$')) {
+    // tenta converter valor existente sem máscara
+    const clean = el.value.replace(/[^\d,\.]/g,'').replace(',','.');
+    const num = parseFloat(clean);
+    if (!isNaN(num)) {
+      el.value = 'R$ ' + num.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?=,))/g, '$1.');
+    }
+  }
+}
+
+function buildTipoSelect(selected) {
+  return `<select class="parc-tipo">${PAG_TIPOS.map(t =>
+    `<option value="${t}"${t === selected ? ' selected' : ''}>${t}</option>`
+  ).join('')}</select>`;
+}
+
+function renderParc() {
+  document.getElementById('parc-ed').innerHTML = pRows.map((p, i) => `
+    <div class="parc-row">
+      ${buildTipoSelect(p[0])}
+      <input type="text" value="${p[1]}" placeholder="Detalhes (ex: 10x sem juros)">
+      <input type="text" class="val-input" value="${p[2]}" placeholder="R$ 0,00"
+             oninput="maskBRL(this)" onfocus="this.select()">
+      <button class="parc-del" onclick="rmParc(${i})">✕</button>
+    </div>`).join('');
+  // inicializa valores já existentes com máscara
+  document.querySelectorAll('#parc-ed .val-input').forEach(initValInput);
+}
+
+function addParc() {
+  pRows.push(['À Vista', '', '']);
+  renderParc();
+  // foca o campo de valor da nova linha
+  const rows = document.querySelectorAll('#parc-ed .parc-row');
+  const lastVal = rows[rows.length-1]?.querySelector('.val-input');
+  if (lastVal) lastVal.focus();
+}
+
+function rmParc(i) { pRows.splice(i, 1); renderParc(); }
+
+/* ───────────────────────────────────────────────
+   CRONOGRAMA / MESES
+─────────────────────────────────────────────── */
+function renderCron() {
+  const ct={};
+  DB.cursos.forEach(c=>ct[c.mes]=(ct[c.mes]||0)+1);
+  document.getElementById('mes-list').innerHTML=DB.meses.map((m,i)=>`
+    <div class="mes-item">
+      <div class="mi-label">${m.label}</div>
+      <span class="mi-ct">${ct[m.id]||0} curso(s)</span>
+      ${DB.meses.length>1?`<button class="btn b-red b-sm" onclick="rmMes('${m.id}')">Remover</button>`:''}
+    </div>`).join('');
+  document.getElementById('cfg-ano').value=DB.config.ano||2026;
+  document.getElementById('cfg-tit').value=DB.config.titulo||'';
+  document.getElementById('cfg-mesatual').value=DB.config.mesAtual||'';
+}
+
+function addMes() {
+  const id=document.getElementById('nm-id').value.trim().toLowerCase().replace(/\s+/g,'-');
+  const lb=document.getElementById('nm-label').value.trim();
+  if(!id||!lb){ toast('Informe a chave e o rótulo.','ko'); return; }
+  if(DB.meses.find(m=>m.id===id)){ toast('Este mês já existe.','ko'); return; }
+  DB.meses.push({id,label:lb}); saveDB();
+  renderCron(); fillMesSels(); refreshPub();
+  document.getElementById('nm-id').value='';
+  document.getElementById('nm-label').value='';
+  toast('Mês adicionado!','ok');
+}
+
+function rmMes(id) {
+  const n=DB.cursos.filter(c=>c.mes===id).length;
+  if(n>0&&!confirm(`Este mês tem ${n} curso(s). Remover mesmo assim?`)) return;
+  DB.meses=DB.meses.filter(m=>m.id!==id);
+  saveDB(); renderCron(); fillMesSels(); refreshPub();
+  toast('Mês removido.','ok');
+}
+
+function saveCron() {
+  DB.config.ano     =parseInt(document.getElementById('cfg-ano').value)||2026;
+  DB.config.titulo  =document.getElementById('cfg-tit').value.trim();
+  DB.config.mesAtual=document.getElementById('cfg-mesatual').value;
+  saveDB(); refreshPub(); toast('Publicação atualizada!','ok');
+}
+
+/* ───────────────────────────────────────────────
+   CONFIGURAÇÕES
+─────────────────────────────────────────────── */
+function renderCfg() {
+  document.getElementById('cc-unid').value  =DB.config.unidade||'';
+  document.getElementById('cc-end').value   =DB.config.endereco||'';
+  document.getElementById('cc-wa').value    =DB.config.whatsapp||'';
+  document.getElementById('cc-ftnome').value=DB.config.ftNome||'';
+  document.getElementById('cc-ftend').value =DB.config.ftEnd||'';
+  document.getElementById('cc-user').value  =DB.config.username||'admin';
+}
+
+function saveCfg() {
+  DB.config.unidade  =document.getElementById('cc-unid').value.trim();
+  DB.config.endereco =document.getElementById('cc-end').value.trim();
+  DB.config.whatsapp =document.getElementById('cc-wa').value.trim();
+  DB.config.ftNome   =document.getElementById('cc-ftnome').value.trim();
+  DB.config.ftEnd    =document.getElementById('cc-ftend').value.trim();
+  saveDB(); refreshPub(); toast('Configurações salvas!','ok');
+}
+
+/* ───────────────────────────────────────────────
+   BACKUP
+─────────────────────────────────────────────── */
+function exportDB() {
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`senai-backup-${new Date().toISOString().slice(0,10)}.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importDB() {
+  try {
+    const data=JSON.parse(document.getElementById('imp-area').value);
+    if(!data.cursos||!data.config) throw new Error('Formato inválido — faltam campos obrigatórios.');
+    DB=data; saveDB(); refreshPub(); fillMesSels(); renderDash();
+    toast('Dados importados com sucesso!','ok');
+    document.getElementById('imp-area').value='';
+  } catch(e){ toast('Erro ao importar: '+e.message,'ko'); }
+}
+
+async function resetDB() {
+  DB=JSON.parse(JSON.stringify(DEFAULT_DB));
+  DB.config.passwordHash=await sha256(DEFAULT_PW);
+  saveDB(); refreshPub(); fillMesSels(); renderDash();
+  toast('Dados resetados para o padrão.','ok');
+}
+
+/* ───────────────────────────────────────────────
+   RENDERIZAÇÃO DO SITE PÚBLICO
+─────────────────────────────────────────────── */
+const WA_SVG=`<svg class="wa-icon" viewBox="0 0 32 32"><path d="M16 3C9 3 3.3 8.7 3.3 15.7c0 2.3.6 4.5 1.7 6.4L3 29l7.2-2c1.8 1 3.8 1.5 5.8 1.5 7 0 12.7-5.7 12.7-12.7S23 3 16 3zm6.4 17.4c-.3.8-1.6 1.5-2.2 1.6-.6.1-1.3.1-2-.1-.4-.1-1-.3-1.7-.6-3-1.3-5-4.4-5.1-4.6-.1-.2-1-1.4-1-2.6s.6-1.9.9-2.1c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .6l-.5.6c-.1.1-.2.2-.1.4.4.7 1 1.4 1.7 1.9.7.5 1.4.8 1.9.9.2.1.3 0 .4-.1l.6-.7c.1-.2.3-.2.5-.1l2 .9c.2.1.3.2.3.3l-.1.5z"/></svg>`;
+const TPUB={
+  qualificacao:   ['tag-qual','Qualificação Profissional'],
+  tecnico:        ['tag-tech','Ensino Técnico'],
+  aperfeicoamento:['tag-aper','Aperfeiçoamento Profissional']
+};
+
+function buildCard(c,wa) {
+  const [tc,tl]=TPUB[c.tipo]||['',''];
+  const periodo=(c.ini&&c.fim)?`${c.ini} → ${c.fim}`:(c.ini||'');
+  const rows=c.parcelas.map(([cd,dt,vl])=>
+    `<tr><td class="lbl">${cd}</td><td>${dt?`<small>${dt}</small>`:''}</td><td>${vl}</td></tr>`
+  ).join('');
+  return`<div class="card" data-month="${c.mes}" data-tipo="${c.tipo}">
+    <div class="card-head">
+      <div class="card-head-top"><h3>${c.nome}</h3><span class="hours-badge">${c.horas}</span></div>
+      <div class="card-subtitle">${periodo} · ${c.turno||'Noturno'}${c.cod?' &nbsp;|&nbsp; '+c.cod:''}</div>
+      <span class="tag ${tc}">${tl}</span>
+    </div>
+    <table class="card-table">
+      <thead><tr><th>Condição</th><th>Detalhes</th><th>Valor</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="card-foot">
+      <a class="btn-wa" href="${wa}" target="_blank" rel="noopener">${WA_SVG} Saiba Mais</a>
+    </div>
+  </div>`;
+}
+
+function refreshPub() {
+  const c=DB.config, wa=c.whatsapp||'#';
+
+  // Header
+  document.getElementById('hdr-badge').textContent=c.unidade||'';
+  document.getElementById('hdr-titulo').textContent=c.titulo||('Qualificações Profissionais '+(c.ano||2026));
+  document.getElementById('hdr-end').innerHTML=c.endereco||'';
+  document.getElementById('hdr-wa').href=wa;
+  document.getElementById('ft-wa').href=wa;
+  document.getElementById('ft-nome').textContent=c.ftNome||'';
+  document.getElementById('ft-end').textContent=c.ftEnd||'';
+
+  // Nav
+  const nav=document.getElementById('pub-nav');
+  let navHtml=`<button class="tab active" onclick="pubFilt('todos',this)">Todos</button>`;
+  DB.meses.forEach(m=>navHtml+=`<button class="tab" onclick="pubFilt('${m.id}',this)">${m.label.split(' ')[0]}</button>`);
+  navHtml+=`<button class="tab" onclick="pubFilt('tecnico',this)">Ensino Técnico</button>
+            <button class="tab" onclick="pubFilt('qualificacao',this)">Qualificação</button>
+            <button class="tab" onclick="pubFilt('aperfeicoamento',this)">Aperfeiçoamento</button>`;
+  nav.innerHTML=navHtml;
+
+  // Sections
+  const secs=document.getElementById('pub-secs');
+  secs.innerHTML='';
+  DB.meses.forEach(m=>{
+    const cs=DB.cursos.filter(c=>c.mes===m.id&&c.ativo!==false);
+    if(!cs.length) return;
+    const div=document.createElement('div');
+    div.className='month-section'; div.id='sec-'+m.id;
+    div.innerHTML=`<div class="month-title">● ${m.label}</div><div class="grid">${cs.map(c=>buildCard(c,wa)).join('')}</div>`;
+    secs.appendChild(div);
+  });
+}
+
+function pubFilt(type,btn) {
+  document.querySelectorAll('#pub-nav .tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const MONTHS=DB.meses.map(m=>m.id);
+  document.querySelectorAll('.card').forEach(card=>{
+    const m=card.dataset.month, t=card.dataset.tipo;
+    card.classList.toggle('hidden', type!=='todos'&&(MONTHS.includes(type)?m!==type:t!==type));
+  });
+  document.querySelectorAll('.month-section').forEach(sec=>{
+    if(type==='todos'){sec.classList.remove('hidden');return;}
+    const id=sec.id.replace('sec-','');
+    if(MONTHS.includes(type)){sec.classList.toggle('hidden',id!==type);return;}
+    sec.classList.toggle('hidden',sec.querySelectorAll('.card:not(.hidden)').length===0);
+  });
+}
+
+/* ───────────────────────────────────────────────
+   BOOT
+─────────────────────────────────────────────── */
+initDB().then(()=>{
+  refreshPub();
+  if(window.location.hash==='#admin') openLogin();
+});
+</script>
+</body>
+</html>
