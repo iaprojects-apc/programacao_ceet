@@ -808,13 +808,9 @@ function saveCurso() {
   const nome = document.getElementById('f-nome').value.trim();
   if (!nome) { toast('Informe o nome do curso.', 'ko'); return; }
 
-  // Lê parcelas (select + inputs)
-  const parc = [];
-  document.querySelectorAll('#parc-ed .parc-row').forEach(r => {
-    const tipo = r.querySelector('select.parc-tipo')?.value || '';
-    const ins  = r.querySelectorAll('input');
-    parc.push([tipo, ins[0].value, ins[1].value]);
-  });
+  // Garante que pRows reflete exatamente o que está nos campos antes de salvar
+  syncParcsFromDOM();
+  const parc = pRows.filter(p => p[0] || p[2]); // remove linhas completamente vazias
 
   const id = document.getElementById('f-id').value;
 
@@ -869,25 +865,37 @@ const PAG_TIPOS = [
   'Cartão', 'Parcelado', 'Financiamento', 'Cheque'
 ];
 
-/* Máscara de moeda BRL */
+/* Máscara de moeda BRL — formata enquanto digita */
 function maskBRL(el) {
-  let v = el.value.replace(/\D/g, '');
+  const v = el.value.replace(/\D/g, '');
   if (!v) { el.value = ''; return; }
-  let num = parseInt(v, 10) / 100;
-  el.value = 'R$ ' + num.toFixed(2)
-    .replace('.', ',')
-    .replace(/(\d)(?=(\d{3})+(?=,))/g, '$1.');
+  const cents = parseInt(v, 10);
+  const parts = (cents / 100).toFixed(2).split('.');
+  el.value = 'R$ ' + parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + parts[1];
 }
-/* Inicializa campo de valor já formatado */
+
+/* Inicializa campo de valor já formatado ao carregar dados salvos */
 function initValInput(el) {
-  if (el.value && !el.value.startsWith('R$')) {
-    // tenta converter valor existente sem máscara
-    const clean = el.value.replace(/[^\d,\.]/g,'').replace(',','.');
-    const num = parseFloat(clean);
-    if (!isNaN(num)) {
-      el.value = 'R$ ' + num.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?=,))/g, '$1.');
-    }
-  }
+  const raw = el.value.trim();
+  if (!raw) return;
+  if (/^R\$\s*\d/.test(raw)) return; // já formatado corretamente
+  const digits = raw.replace(/\D/g, '');
+  if (!digits) return;
+  const cents = parseInt(digits, 10);
+  const parts = (cents / 100).toFixed(2).split('.');
+  el.value = 'R$ ' + parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + parts[1];
+}
+
+/* Sincroniza pRows com o estado atual dos campos no DOM.
+   DEVE ser chamado antes de qualquer operação que acione renderParc(),
+   para não perder o que o usuário digitou. */
+function syncParcsFromDOM() {
+  pRows = [];
+  document.querySelectorAll('#parc-ed .parc-row').forEach(r => {
+    const tipo = r.querySelector('select.parc-tipo')?.value || '';
+    const ins  = r.querySelectorAll('input');
+    pRows.push([tipo, ins[0]?.value || '', ins[1]?.value || '']);
+  });
 }
 
 function buildTipoSelect(selected) {
@@ -910,15 +918,20 @@ function renderParc() {
 }
 
 function addParc() {
+  syncParcsFromDOM();                // salva o que foi digitado antes de redesenhar
   pRows.push(['À Vista', '', '']);
   renderParc();
   // foca o campo de valor da nova linha
   const rows = document.querySelectorAll('#parc-ed .parc-row');
-  const lastVal = rows[rows.length-1]?.querySelector('.val-input');
+  const lastVal = rows[rows.length - 1]?.querySelector('.val-input');
   if (lastVal) lastVal.focus();
 }
 
-function rmParc(i) { pRows.splice(i, 1); renderParc(); }
+function rmParc(i) {
+  syncParcsFromDOM();                // salva o que foi digitado antes de redesenhar
+  pRows.splice(i, 1);
+  renderParc();
+}
 
 /* ───────────────────────────────────────────────
    CRONOGRAMA / MESES
