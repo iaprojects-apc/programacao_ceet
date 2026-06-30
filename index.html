@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cursos SESI SENAI Lagoa</title>
+<title>Cursos SESI SENAI Lagoa 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <!-- Firebase SDK (Realtime Database + Auth) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -168,6 +168,8 @@ footer em { color:rgba(255,255,255,.3); font-style:normal; }
 .dt tbody tr { border-bottom:1px solid var(--border); transition:background .12s; }
 .dt tbody tr:last-child { border-bottom:none; }
 .dt tbody tr:hover { background:#f4f8ff; }
+.dt tbody tr.row-inativo { opacity:.55; background:#fafafa; }
+.dt tbody tr.row-inativo:hover { opacity:.8; }
 .dt td { padding:11px 14px; vertical-align:middle; }
 .dt .nm { font-weight:600; color:var(--navy); font-size:14px; }
 .dt .sub { font-size:11px; color:var(--muted); }
@@ -240,7 +242,7 @@ footer em { color:rgba(255,255,255,.3); font-style:normal; }
   <header>
     <div class="badge" id="hdr-badge">SESI SENAI LAGOA — PORTO VELHO / RO</div>
     <h1>Programação de Cursos</h1>
-    <h2 id="hdr-titulo">Qualificações Profissionais</h2>
+    <h2 id="hdr-titulo">Qualificações Profissionais 2026</h2>
     <p id="hdr-end">Av. Rio de Janeiro, 4734 – Bairro Lagoa &nbsp;|&nbsp; Tel.: (69) 3217-9819 &nbsp;|&nbsp; Turmas noturnas</p>
     <a class="header-wa" id="hdr-wa" href="https://wa.me/message/I4YSP5CYRGURC1" target="_blank" rel="noopener">
       <svg class="wa-icon" viewBox="0 0 32 32"><path d="M16 3C9 3 3.3 8.7 3.3 15.7c0 2.3.6 4.5 1.7 6.4L3 29l7.2-2c1.8 1 3.8 1.5 5.8 1.5 7 0 12.7-5.7 12.7-12.7S23 3 16 3zm6.4 17.4c-.3.8-1.6 1.5-2.2 1.6-.6.1-1.3.1-2-.1-.4-.1-1-.3-1.7-.6-3-1.3-5-4.4-5.1-4.6-.1-.2-1-1.4-1-2.6s.6-1.9.9-2.1c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .6l-.5.6c-.1.1-.2.2-.1.4.4.7 1 1.4 1.7 1.9.7.5 1.4.8 1.9.9.2.1.3 0 .4-.1l.6-.7c.1-.2.3-.2.5-.1l2 .9c.2.1.3.2.3.3l-.1.5z"/></svg>
@@ -392,6 +394,12 @@ footer em { color:rgba(255,255,255,.3); font-style:normal; }
           <select id="filt-mes" onchange="renderList()"
             style="border:1.5px solid var(--border);border-radius:5px;padding:7px 10px;font-size:13px;outline:none;background:#fff">
             <option value="">Todos os meses</option>
+          </select>
+          <select id="filt-status" onchange="renderList()"
+            style="border:1.5px solid var(--border);border-radius:5px;padding:7px 10px;font-size:13px;outline:none;background:#fff">
+            <option value="">Todos os status</option>
+            <option value="ativo">Apenas Ativos</option>
+            <option value="inativo">Apenas Inativos</option>
           </select>
           <button class="btn b-blue" onclick="newCurso()">+ Novo Curso</button>
         </div>
@@ -882,24 +890,47 @@ function fillMesSels() {
 function mesLabel(id) { return (DB.meses.find(m=>m.id===id)||{label:id}).label; }
 
 function renderList() {
-  const filt=document.getElementById('filt-mes').value;
-  const list=DB.cursos.filter(c=>!filt||c.mes===filt);
+  const filt   = document.getElementById('filt-mes').value;
+  const status = document.getElementById('filt-status')?.value || '';
+  let list = DB.cursos.filter(c => !filt || c.mes === filt);
+  if (status === 'ativo')   list = list.filter(c => c.ativo !== false);
+  if (status === 'inativo') list = list.filter(c => c.ativo === false);
+
   document.getElementById('c-ct').textContent='('+list.length+')';
   document.getElementById('c-list').innerHTML=list.map(c=>{
     const [tc,tl]=TMAP[c.tipo]||['',''];
-    return`<tr>
+    const isAtivo = c.ativo !== false;
+    return`<tr class="${isAtivo?'':'row-inativo'}">
       <td><div class="nm">${c.nome}</div><div class="sub">${c.horas}${c.cod?' · '+c.cod:''}</div></td>
       <td>${mesLabel(c.mes)}</td>
       <td><span class="tinl ${tc}">${tl}</span></td>
       <td style="font-size:12px">${c.ini||''}${c.fim?' → '+c.fim:''}</td>
       <td style="font-size:12px">${c.turno||'Noturno'}</td>
-      <td><span class="abadge ${c.ativo?'on':'off'}">${c.ativo?'Ativo':'Inativo'}</span></td>
+      <td><span class="abadge ${isAtivo?'on':'off'}">${isAtivo?'Ativo':'Inativo'}</span></td>
       <td><div class="row-acts">
+        <button class="btn ${isAtivo?'b-gray':'b-green'} b-sm" onclick="toggleAtivo('${c.id}')"
+          title="${isAtivo?'Desabilitar curso (oculta do site, mantém os dados)':'Reabilitar curso (volta a aparecer no site)'}">
+          ${isAtivo?'⏸ Desabilitar':'▶ Reabilitar'}
+        </button>
         <button class="btn b-blue b-sm" onclick="editCurso('${c.id}')">✏️ Editar</button>
-        <button class="btn b-red b-sm"  onclick="delCurso('${c.id}')">🗑</button>
+        <button class="btn b-red b-sm"  onclick="delCurso('${c.id}')" title="Excluir definitivamente — use Desabilitar para cursos que podem voltar">🗑</button>
       </div></td>
     </tr>`;
   }).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">Nenhum curso encontrado.</td></tr>';
+}
+
+/* Ativa/desativa um curso com um único clique — não exclui dados,
+   apenas oculta (ou reexibe) do site público. Ideal para cursos
+   que podem voltar a ser ofertados futuramente. */
+function toggleAtivo(id) {
+  const c = DB.cursos.find(x => x.id === id);
+  if (!c) return;
+  const novoStatus = !(c.ativo !== false); // inverte o estado atual
+  const acao = novoStatus ? 'reabilitar' : 'desabilitar';
+  if (!confirm(`Deseja ${acao} o curso "${c.nome}"?\n\n${novoStatus ? 'Ele voltará a aparecer no site público.' : 'Ele será ocultado do site público, mas os dados continuam salvos e podem ser reabilitados a qualquer momento.'}`)) return;
+  c.ativo = novoStatus;
+  saveDB(); refreshPub(); renderList(); renderDash();
+  toast(novoStatus ? 'Curso reabilitado e visível no site!' : 'Curso desabilitado — dados preservados para reativação futura.', 'ok');
 }
 
 /* ───────────────────────────────────────────────
@@ -1027,10 +1058,12 @@ function saveCurso() {
 }
 
 function delCurso(id) {
-  if(!confirm('Excluir este curso?')) return;
+  const c = DB.cursos.find(x => x.id === id);
+  const nome = c ? c.nome : 'este curso';
+  if (!confirm(`Excluir DEFINITIVAMENTE o curso "${nome}"?\n\nEsta ação não pode ser desfeita e apaga todos os dados (datas, valores, formas de pagamento).\n\nDica: se este curso pode voltar a ser ofertado futuramente, cancele e use o botão "⏸ Desabilitar" em vez de excluir.`)) return;
   DB.cursos=DB.cursos.filter(c=>c.id!==id);
   saveDB(); refreshPub(); renderList(); renderDash();
-  toast('Curso removido.','ok');
+  toast('Curso removido definitivamente.','ok');
 }
 
 /* ─── Tipos de pagamento ─── */
