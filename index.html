@@ -666,6 +666,7 @@ async function initDB() {
     fbDB.ref('senai_db').on('value', snap => {
       if (snap.exists()) {
         DB = snap.val();
+        cleanupDupMeses();   // corrige duplicatas herdadas antes de renderizar
         localStorage.setItem(DB_KEY, JSON.stringify(DB));
       }
       // Se o banco ainda está vazio, usa DEFAULT_DB já carregado.
@@ -873,7 +874,36 @@ function fromDateInput(s) {
   return m ? `${m[3]}/${m[2]}/${m[1]}` : s;
 }
 
-function fillMesSels() {
+/* Remove entradas duplicadas de DB.meses, migrando os cursos
+   vinculados para o ID canônico (primeiro encontrado por label).
+   Chamada automaticamente após carregar os dados do Firebase. */
+function cleanupDupMeses() {
+  const seen  = {};  // label normalizado → id canônico
+  const remap = {};  // id duplicado     → id canônico
+  const clean = [];
+
+  DB.meses.forEach(m => {
+    const key = m.label.trim().toLowerCase();
+    if (!seen[key]) {
+      seen[key] = m.id;
+      clean.push(m);
+    } else {
+      remap[m.id] = seen[key];  // marca como duplicata
+    }
+  });
+
+  if (!Object.keys(remap).length) return;  // nada a corrigir
+
+  // Migra cursos que usam IDs duplicados para o ID canônico
+  let altered = false;
+  DB.cursos.forEach(c => {
+    if (remap[c.mes]) { c.mes = remap[c.mes]; altered = true; }
+  });
+
+  DB.meses = clean;
+  saveDB();
+  console.info('cleanupDupMeses: removidas', Object.keys(remap).length, 'entradas duplicadas.', remap);
+}
   // Ano selector: ano atual + 5 anos à frente
   const anoAtual = new Date().getFullYear();
   const anoSel   = document.getElementById('f-mes-ano');
@@ -1024,11 +1054,13 @@ function saveCurso() {
   if (!confirm(`${acao} "${nome}"?\n\nClique em OK para confirmar.`)) return;
 
   // Montar mes ID e label
-  const mesNome = document.getElementById('f-mes-nome').value;
-  const mesAno  = document.getElementById('f-mes-ano').value;
-  const mesId   = mesNome + '-' + mesAno;
-  const mesLbl  = (MES_LABELS_MAP[mesNome] || mesNome) + ' ' + mesAno;
-  if (!DB.meses.find(m => m.id === mesId)) {
+  const mesNome  = document.getElementById('f-mes-nome').value;
+  const mesAno   = document.getElementById('f-mes-ano').value;
+  const mesId    = mesNome + '-' + mesAno;
+  const mesLbl   = (MES_LABELS_MAP[mesNome] || mesNome) + ' ' + mesAno;
+  // Criar entrada em DB.meses se não existir (verifica ID e label para evitar duplicatas)
+  const labelNorm = mesLbl.trim().toLowerCase();
+  if (!DB.meses.find(m => m.id === mesId || m.label.trim().toLowerCase() === labelNorm)) {
     DB.meses.push({id: mesId, label: mesLbl});
     fillMesSels();
   }
@@ -1283,19 +1315,22 @@ function refreshPub() {
   document.getElementById('ft-nome').textContent=c.ftNome||'';
   document.getElementById('ft-end').textContent=c.ftEnd||'';
 
-  // Nav
+  // Nav — deduplica por label antes de renderizar (segurança extra)
   const nav=document.getElementById('pub-nav');
+  const mesesNav = DB.meses.filter((m, i, arr) =>
+    arr.findIndex(x => x.label.trim().toLowerCase() === m.label.trim().toLowerCase()) === i
+  );
   let navHtml=`<button class="tab active" onclick="pubFilt('todos',this)">Todos</button>`;
-  DB.meses.forEach(m=>navHtml+=`<button class="tab" onclick="pubFilt('${m.id}',this)">${m.label.split(' ')[0]}</button>`);
+  mesesNav.forEach(m=>navHtml+=`<button class="tab" onclick="pubFilt('${m.id}',this)">${m.label.split(' ')[0]}</button>`);
   navHtml+=`<button class="tab" onclick="pubFilt('tecnico',this)">Ensino Técnico</button>
             <button class="tab" onclick="pubFilt('qualificacao',this)">Qualificação</button>
             <button class="tab" onclick="pubFilt('aperfeicoamento',this)">Aperfeiçoamento</button>`;
   nav.innerHTML=navHtml;
 
-  // Sections
+  // Sections — também usa lista deduplicada
   const secs=document.getElementById('pub-secs');
   secs.innerHTML='';
-  DB.meses.forEach(m=>{
+  mesesNav.forEach(m=>{
     const cs=DB.cursos.filter(c=>c.mes===m.id&&c.ativo!==false);
     if(!cs.length) return;
     const div=document.createElement('div');
