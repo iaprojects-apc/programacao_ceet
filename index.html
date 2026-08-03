@@ -233,6 +233,67 @@ footer em { color:rgba(255,255,255,.3); font-style:normal; }
   .two-col { grid-template-columns:1fr; }
   .adm-tabs { gap:0; }
 }
+
+/* ══════════════════════ MELHORIAS DE RESPONSIVIDADE ══════════════════════ */
+@media (max-width: 1024px) {
+  .month-section { padding: 0 16px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+}
+
+@media (max-width: 768px) {
+  header { padding: 36px 16px 32px; }
+  header h1 { font-size: clamp(32px, 7vw, 54px); }
+  header h2 { font-size: clamp(20px, 4.5vw, 36px); }
+  header p { font-size: 13.5px; margin-bottom: 20px; }
+  .header-wa { font-size: 14px; padding: 10px 20px; width: 100%; max-width: 320px; justify-content: center; }
+  
+  .nav-wrap { padding: 10px 12px; gap: 6px; justify-content: flex-start; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+  .nav-wrap::-webkit-scrollbar { height: 4px; }
+  .nav-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }
+  .tab { flex-shrink: 0; padding: 6px 14px; font-size: 12px; }
+
+  .grid { grid-template-columns: 1fr; }
+  
+  .card-head { padding: 14px 16px 12px; }
+  .card-head h3 { font-size: 18px; }
+  .hours-badge { font-size: 12px; padding: 2px 8px; }
+  .card-table td { padding: 9px 12px; font-size: 13px; }
+  .card-table td:last-child { font-size: 16px; }
+  
+  .adm-top { padding: 0 12px; height: auto; min-height: 54px; flex-wrap: wrap; gap: 8px; padding-top: 8px; padding-bottom: 8px; }
+  .adm-brand { font-size: 15px; }
+  .adm-acts { width: 100%; justify-content: flex-end; }
+  .tbtn { padding: 5px 10px; font-size: 11px; }
+
+  .adm-body { padding: 16px 12px; }
+  .fp-body { padding: 14px; }
+  
+  .stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .sc { padding: 12px; }
+  .sc .v { font-size: 26px; }
+
+  .parc-row { flex-wrap: wrap; }
+  .parc-row select.parc-tipo { flex: 1 1 100%; }
+  .parc-row input { flex: 1 1 60%; }
+  .parc-row input.val-input { flex: 1 1 30%; }
+
+  .mes-item { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .mes-item > div:last-child { width: 100%; justify-content: space-between; }
+  .mes-item select { flex: 1; }
+}
+
+@media (max-width: 480px) {
+  .stats { grid-template-columns: 1fr; }
+  .sh { flex-direction: column; align-items: flex-start; }
+  .sh > div { width: 100%; }
+  .sh select, .sh button { width: 100%; }
+  
+  .dt table { font-size: 12px; }
+  .dt th, .dt td { padding: 8px 10px; }
+  .dt .row-acts { flex-direction: column; }
+  .dt .btn-sm { width: 100%; justify-content: center; }
+}
+
 </style>
 </head>
 <body>
@@ -797,6 +858,8 @@ function saveUser() {
 function showAdmin() {
   document.getElementById('pub').style.display='none';
   document.getElementById('adm').classList.add('show');
+  // Limpa duplicatas de meses ao abrir o painel e salva se houve mudança
+  if (cleanupDupMeses()) { saveDB(); }
   renderDash(); fillMesSels();
 }
 function goPublic() {
@@ -873,8 +936,27 @@ function fromDateInput(s) {
   return m ? `${m[3]}/${m[2]}/${m[1]}` : s;
 }
 
+/* Remove duplicatas de DB.meses APENAS em memória — sem gravar no Firebase.
+   Chamada somente quando o admin abre o painel, nunca dentro do listener. */
+function cleanupDupMeses() {
+  const seen  = {};
+  const remap = {};
+  const clean = [];
+
+  (DB.meses || []).forEach(m => {
+    const key = m.label.trim().toLowerCase();
+    if (!seen[key]) { seen[key] = m.id; clean.push(m); }
+    else { remap[m.id] = seen[key]; }
+  });
+
+  if (!Object.keys(remap).length) return false; // nada a fazer
+
+  DB.cursos.forEach(c => { if (remap[c.mes]) c.mes = remap[c.mes]; });
+  DB.meses = clean;
+  return true; // houve alteração
+}
+
 function fillMesSels() {
-  // Ano selector: ano atual + 5 anos à frente
   const anoAtual = new Date().getFullYear();
   const anoSel   = document.getElementById('f-mes-ano');
   anoSel.innerHTML = '';
@@ -1024,11 +1106,13 @@ function saveCurso() {
   if (!confirm(`${acao} "${nome}"?\n\nClique em OK para confirmar.`)) return;
 
   // Montar mes ID e label
-  const mesNome = document.getElementById('f-mes-nome').value;
-  const mesAno  = document.getElementById('f-mes-ano').value;
-  const mesId   = mesNome + '-' + mesAno;
-  const mesLbl  = (MES_LABELS_MAP[mesNome] || mesNome) + ' ' + mesAno;
-  if (!DB.meses.find(m => m.id === mesId)) {
+  const mesNome  = document.getElementById('f-mes-nome').value;
+  const mesAno   = document.getElementById('f-mes-ano').value;
+  const mesId    = mesNome + '-' + mesAno;
+  const mesLbl   = (MES_LABELS_MAP[mesNome] || mesNome) + ' ' + mesAno;
+  // Criar entrada em DB.meses se não existir (verifica ID e label para evitar duplicatas)
+  const labelNorm = mesLbl.trim().toLowerCase();
+  if (!DB.meses.find(m => m.id === mesId || m.label.trim().toLowerCase() === labelNorm)) {
     DB.meses.push({id: mesId, label: mesLbl});
     fillMesSels();
   }
@@ -1143,19 +1227,75 @@ function rmParc(i) {
 /* ───────────────────────────────────────────────
    CRONOGRAMA / MESES
 ─────────────────────────────────────────────── */
+
+/* ─── HELPER FUNCTIONS FOR DATES ─── */
+function parseDataBR(s) {
+  if (!s) return null;
+  const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (!m) return null;
+  return new Date(parseInt(m[3], 10), parseInt(m[2], 10) - 1, parseInt(m[1], 10), 23, 59, 59);
+}
+
+function isMesVigente(mesId) {
+  const mObj = DB.meses.find(m => m.id === mesId);
+  if (mObj && mObj.modoVisibilidade === 'sempre_visivel') return true;
+  if (mObj && mObj.modoVisibilidade === 'sempre_oculto') return false;
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const cursosDoMes = DB.cursos.filter(c => c.mes === mesId && c.ativo !== false);
+  if (!cursosDoMes.length) return false;
+  return cursosDoMes.some(c => {
+    const dataFim = parseDataBR(c.fim);
+    const dataIni = parseDataBR(c.ini);
+    if (dataFim) return dataFim >= hoje;
+    if (dataIni) return dataIni >= hoje;
+    return true;
+  });
+}
+
+function setVisibilidadeMes(mesId, novoModo) {
+  const m = DB.meses.find(x => x.id === mesId);
+  if (m) {
+    m.modoVisibilidade = novoModo;
+    saveDB();
+    refreshPub();
+    renderCron();
+    toast('Parametrização do mês atualizada!', 'ok');
+  }
+}
+
 function renderCron() {
   const ct={};
   DB.cursos.forEach(c=>ct[c.mes]=(ct[c.mes]||0)+1);
-  document.getElementById('mes-list').innerHTML=DB.meses.map((m,i)=>`
-    <div class="mes-item">
-      <div class="mi-label">${m.label}</div>
-      <span class="mi-ct">${ct[m.id]||0} curso(s)</span>
-      ${DB.meses.length>1?`<button class="btn b-red b-sm" onclick="rmMes('${m.id}')">Remover</button>`:''}
-    </div>`).join('');
+  document.getElementById('mes-list').innerHTML=DB.meses.map((m)=>{
+    const vigenteAuto = isMesVigente(m.id);
+    const modo = m.modoVisibilidade || 'auto';
+    return `
+    <div class="mes-item" style="flex-wrap:wrap; gap:10px;">
+      <div style="flex:1; min-width:180px;">
+        <div class="mi-label">${m.label}</div>
+        <span class="mi-ct">${ct[m.id]||0} curso(s) cadastrado(s)</span>
+        <span class="abadge ${vigenteAuto?'on':'off'}" style="margin-left:6px;">
+          ${vigenteAuto?'• Visível no Site':'• Oculto (Encerrado)'}
+        </span>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <label style="font-size:11px; font-weight:bold; color:var(--muted);">CONTROLE:</label>
+        <select onchange="setVisibilidadeMes('${m.id}', this.value)" 
+                style="border:1.5px solid var(--border); border-radius:4px; padding:4px 8px; font-size:12px; outline:none; background:#fff;">
+          <option value="auto" ${modo === 'auto' ? 'selected' : ''}>🤖 Automático (Por Data)</option>
+          <option value="sempre_visivel" ${modo === 'sempre_visivel' ? 'selected' : ''}>👁️ Forçar Visível</option>
+          <option value="sempre_oculto" ${modo === 'sempre_oculto' ? 'selected' : ''}>🙈 Forçar Oculto</option>
+        </select>
+        ${DB.meses.length>1?`<button class="btn b-red b-sm" onclick="rmMes('${m.id}')">Excluir</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
   document.getElementById('cfg-ano').value=DB.config.ano||2026;
   document.getElementById('cfg-tit').value=DB.config.titulo||'';
   document.getElementById('cfg-mesatual').value=DB.config.mesAtual||'';
 }
+
 
 function addMes() {
   const id=document.getElementById('nm-id').value.trim().toLowerCase().replace(/\s+/g,'-');
@@ -1271,10 +1411,10 @@ function buildCard(c,wa) {
   </div>`;
 }
 
+
 function refreshPub() {
   const c=DB.config, wa=c.whatsapp||'#';
 
-  // Header
   document.getElementById('hdr-badge').textContent=c.unidade||'';
   document.getElementById('hdr-titulo').textContent=c.titulo||('Qualificações Profissionais '+(c.ano||2026));
   document.getElementById('hdr-end').innerHTML=c.endereco||'';
@@ -1283,20 +1423,42 @@ function refreshPub() {
   document.getElementById('ft-nome').textContent=c.ftNome||'';
   document.getElementById('ft-end').textContent=c.ftEnd||'';
 
-  // Nav
+  const mesesNav = DB.meses.filter((m, i, arr) =>
+    arr.findIndex(x => x.label.trim().toLowerCase() === m.label.trim().toLowerCase()) === i
+  ).filter(m => isMesVigente(m.id));
+
   const nav=document.getElementById('pub-nav');
-  let navHtml=`<button class="tab active" onclick="pubFilt('todos',this)">Todos</button>`;
-  DB.meses.forEach(m=>navHtml+=`<button class="tab" onclick="pubFilt('${m.id}',this)">${m.label.split(' ')[0]}</button>`);
+  let navHtml=`<button class="tab active" onclick="pubFilt('todos',this)">Todos Vigentes</button>`;
+  mesesNav.forEach(m=>navHtml+=`<button class="tab" onclick="pubFilt('${m.id}',this)">${m.label.split(' ')[0]}</button>`);
   navHtml+=`<button class="tab" onclick="pubFilt('tecnico',this)">Ensino Técnico</button>
             <button class="tab" onclick="pubFilt('qualificacao',this)">Qualificação</button>
             <button class="tab" onclick="pubFilt('aperfeicoamento',this)">Aperfeiçoamento</button>`;
   nav.innerHTML=navHtml;
 
-  // Sections
   const secs=document.getElementById('pub-secs');
   secs.innerHTML='';
-  DB.meses.forEach(m=>{
-    const cs=DB.cursos.filter(c=>c.mes===m.id&&c.ativo!==false);
+
+  if (mesesNav.length === 0) {
+    secs.innerHTML = `
+      <div style="text-align:center; padding:60px 20px; color:var(--muted);">
+        <h3>Nenhuma programação com data vigente no momento.</h3>
+        <p style="margin-top:8px;">Novas turmas serão disponibilizadas em breve!</p>
+      </div>`;
+    return;
+  }
+
+  mesesNav.forEach(m=>{
+    const hoje = new Date();
+    hoje.setHours(0,0,0,0);
+
+    const cs = DB.cursos.filter(c => {
+      if (c.mes !== m.id || c.ativo === false) return false;
+      if (m.modoVisibilidade === 'sempre_visivel') return true;
+      
+      const dataFim = parseDataBR(c.fim);
+      return !dataFim || dataFim >= hoje;
+    });
+
     if(!cs.length) return;
     const div=document.createElement('div');
     div.className='month-section'; div.id='sec-'+m.id;
@@ -1304,6 +1466,7 @@ function refreshPub() {
     secs.appendChild(div);
   });
 }
+
 
 function pubFilt(type,btn) {
   document.querySelectorAll('#pub-nav .tab').forEach(b=>b.classList.remove('active'));
